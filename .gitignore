@@ -1,0 +1,78 @@
+# External dependencies (use as submodules if needed)
+vst3sdk/
+vst3projectgenerator/
+
+# Build directories
+build/
+Build/
+WetDelay/build/
+*/build/
+*/Build/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+*.cmake
+!CMakeLists.txt
+projectversion.h
+
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+
+# Build outputs
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.exp
+*.pdb
+*.ilk
+*.obj
+*.o
+*.tlog
+*.recipe
+*.lastbuildstate
+*.idb
+*.log
+
+# VST3 builds (keep source, ignore built plugins)
+*.vst3
+!*.vst3/Contents/Resources/*.uidesc
+!*.vst3/Contents/Resources/*.png
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+*.ico
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+*.stamp
+*.depend
+
+# VST SDK build artifacts
+vst3sdk/build/
+vst3sdk/out/
