@@ -208,6 +208,10 @@ private:
     static constexpr double LOW_PASS_FREQ = 9000.0;   // 9 kHz - warm high-end rolloff
     static constexpr double ANTI_ALIAS_FREQ = 10000.0; // Anti-aliasing before downsample
     
+    // Channel crosstalk (authentic 80s analog bleed between L/R)
+    // -40 dB = 0.01 (1% bleed) - typical for quality rack units
+    static constexpr float CROSSTALK_AMOUNT = 0.01f;
+    
     // Convert milliseconds to samples at internal rate
     int msToSamples(int ms) const;
     

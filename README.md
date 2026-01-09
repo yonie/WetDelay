@@ -21,6 +21,7 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 - **TPDF Dither**: Smooth quantization with triangular probability density function dither (0.5 LSB)
 - **-80 dBFS Noise Floor**: Realistic analog electronics and ADC/DAC noise simulation
 - **Vintage Filtering**: 80 Hz high-pass and 9 kHz low-pass (6 dB/oct) for warm character
+- **Channel Crosstalk**: Authentic -40 dB (1%) L/R channel bleed simulating analog circuitry
 
 ## System Requirements
 
@@ -146,6 +147,7 @@ xcopy /Y /I WetDelay\build\VST3\Release\WetDelay.vst3 "%COMMONPROGRAMFILES%\VST3
 - **Quantization**: 12-bit uniform quantization with TPDF dither
 - **Noise Floor**: Fixed -80 dBFS analog-style noise
 - **Filtering**: 1st-order high-pass (80 Hz) and low-pass (9 kHz)
+- **Crosstalk**: 1% (-40 dB) bidirectional channel bleed
 - **Metering**: Atomic peak detection with exponential decay
 - **Thread Safety**: Lock-free atomic operations for GUI communication
 - **Buffer Size**: Pre-allocated for 400ms @ internal sample rate
@@ -285,6 +287,11 @@ See the VST3 SDK license files for details on SDK licensing.
 
 ## Version History
 
+### v1.2.0 (2026-01-09)
+- **Channel Crosstalk**:
+  - Authentic -40 dB (1%) L/R channel bleed
+  - Simulates analog circuitry imperfections
+  
 ### v1.1.0 (2026-01-09)
 - **80s Rack-Style Character**:
   - 24 kHz internal sample rate with resampling

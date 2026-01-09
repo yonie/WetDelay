@@ -159,6 +159,13 @@ void DelayBuffer::processInternalSample(float inputL, float inputR,
     float delayedL = bufferL[readPos];
     float delayedR = bufferR[readPos];
     
+    // Apply channel crosstalk (authentic 80s analog bleed between L/R)
+    // Small amount of each channel bleeds into the other
+    float crosstalkedL = delayedL + CROSSTALK_AMOUNT * delayedR;
+    float crosstalkedR = delayedR + CROSSTALK_AMOUNT * delayedL;
+    delayedL = crosstalkedL;
+    delayedR = crosstalkedR;
+    
     // Apply character filters (at internal 24 kHz rate)
     // High-pass (80 Hz) - removes low rumble
     delayedL = highPassL.process(delayedL);
