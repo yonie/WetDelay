@@ -73,7 +73,7 @@ protected:
 	
 	// Meter update timing
 	Steinberg::int32 samplesSinceLastMeterUpdate = 0;
-	Steinberg::int32 meterUpdateInterval = 2205;  // ~50ms at 44100Hz
+	Steinberg::int32 meterUpdateInterval = 735;  // ~16.67ms at 44100Hz (60fps)
 	
 	// Update peak meter
 	void updatePeak(float sample, std::atomic<float>& peak);

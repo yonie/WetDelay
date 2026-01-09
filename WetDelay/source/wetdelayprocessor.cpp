@@ -147,7 +147,7 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 				updatePeak(outputR[i], outputPeakR);
 			}
 			
-			// Send meter data via message every ~50ms (at 44100Hz that's ~2205 samples)
+			// Send meter data via message every ~16.67ms for 60fps (at 44100Hz that's ~735 samples)
 			samplesSinceLastMeterUpdate += data.numSamples;
 			if (samplesSinceLastMeterUpdate >= meterUpdateInterval)
 			{
@@ -201,8 +201,8 @@ tresult PLUGIN_API WetDelayProcessorProcessor::setupProcessing (Vst::ProcessSetu
 	// Initialize delay buffer with max delay time
 	delayBuffer.prepare(newSetup.sampleRate, 400);  // 400ms max
 	
-	// Calculate meter update interval (~50ms worth of samples)
-	meterUpdateInterval = static_cast<int32>(newSetup.sampleRate * 0.05);
+	// Calculate meter update interval (~16.67ms worth of samples for 60fps)
+	meterUpdateInterval = static_cast<int32>(newSetup.sampleRate / 60.0);
 	
 	return AudioEffect::setupProcessing (newSetup);
 }

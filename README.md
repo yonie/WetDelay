@@ -4,7 +4,7 @@
 ![VST3](https://img.shields.io/badge/VST3-Compatible-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 
-A professional stereo delay VST3 plugin with 100% wet output and visual level metering.
+A professional stereo delay VST3 plugin with authentic 80s rack-style digital delay character.
 
 ## Features
 
@@ -12,8 +12,15 @@ A professional stereo delay VST3 plugin with 100% wet output and visual level me
 - **6 Delay Times**: Switchable delay times (20ms, 40ms, 80ms, 120ms, 220ms, 400ms)
 - **Stereo Processing**: Independent left and right channel delay processing
 - **Visual Metering**: Real-time peak level meters for input and output
-- **Low Latency**: Optimized circular buffer implementation
 - **VST3 Automation**: Full parameter automation support in DAWs
+
+### 80s Rack-Style Character
+
+- **24 kHz Internal Sample Rate**: Authentic vintage digital delay processing with band-limited frequency response
+- **12-bit Quantization**: Classic gritty digital character with 4096 discrete levels
+- **TPDF Dither**: Smooth quantization with triangular probability density function dither (0.5 LSB)
+- **-80 dBFS Noise Floor**: Realistic analog electronics and ADC/DAC noise simulation
+- **Vintage Filtering**: 80 Hz high-pass and 9 kHz low-pass (6 dB/oct) for warm character
 
 ## System Requirements
 
@@ -124,18 +131,24 @@ xcopy /Y /I WetDelay\build\VST3\Release\WetDelay.vst3 "%COMMONPROGRAMFILES%\VST3
 
 ### Audio Processing
 
-- **Sample Rates**: Supports 22.05 kHz to 384 kHz
-- **Bit Depth**: 32-bit float processing
+- **Host Sample Rates**: Supports 22.05 kHz to 384 kHz
+- **Internal Sample Rate**: 24 kHz (80s rack-style)
+- **Host Bit Depth**: 32-bit float processing
+- **Internal Bit Depth**: 12-bit quantization with dither
 - **Latency**: User-controlled (20-400ms delay)
 - **CPU Usage**: <0.5% (typical)
 - **Memory**: ~200 KB
 
 ### Implementation Details
 
-- **Delay Engine**: Circular buffer with efficient modulo wrapping
+- **Delay Engine**: Circular buffer at 24 kHz internal rate
+- **Resampling**: Linear interpolation with anti-aliasing and reconstruction filters
+- **Quantization**: 12-bit uniform quantization with TPDF dither
+- **Noise Floor**: Fixed -80 dBFS analog-style noise
+- **Filtering**: 1st-order high-pass (80 Hz) and low-pass (9 kHz)
 - **Metering**: Atomic peak detection with exponential decay
 - **Thread Safety**: Lock-free atomic operations for GUI communication
-- **Buffer Size**: Pre-allocated for 400ms @ max sample rate
+- **Buffer Size**: Pre-allocated for 400ms @ internal sample rate
 
 ## Project Structure
 
@@ -237,17 +250,18 @@ Test coverage includes:
 
 ## Roadmap / Future Enhancements
 
-Current version is **v1.0** - Core functionality complete
+Current version is **v1.1** - 80s Rack-Style Character
 
 Potential future additions:
 - [ ] Enhanced GUI matching backplate.jpg reference
 - [ ] Custom LED-style level meters
 - [ ] Feedback control
-- [ ] High-pass/low-pass filters
 - [ ] Tempo sync mode
 - [ ] Ping-pong stereo delay
 - [ ] Preset management
 - [ ] Additional delay times
+- [ ] Adjustable bit depth (8-16 bit)
+- [ ] Adjustable internal sample rate
 
 ## Author
 
@@ -269,6 +283,14 @@ See the VST3 SDK license files for details.
 - The audio plugin development community
 
 ## Version History
+
+### v1.1.0 (2026-01-09)
+- **80s Rack-Style Character**:
+  - 24 kHz internal sample rate with resampling
+  - 12-bit quantization (4096 levels)
+  - TPDF dither for smooth quantization
+  - Fixed -80 dBFS noise floor
+  - Anti-aliasing and reconstruction filters
 
 ### v1.0.0 (2026-01-07)
 - Initial release
