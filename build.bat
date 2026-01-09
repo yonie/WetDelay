@@ -18,7 +18,7 @@ cd WetDelay\build
 echo.
 echo Step 1: Configuring CMake...
 echo ================================================
-cmake .. -G "Visual Studio 17 2022" -A x64
+cmake .. -G "Visual Studio 17 2022" -A x64 -DSMTG_CREATE_PLUGIN_LINK=0
 if errorlevel 1 (
     echo ERROR: CMake configuration failed!
     cd ..\..
