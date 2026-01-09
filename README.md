@@ -153,9 +153,8 @@ xcopy /Y /I WetDelay\build\VST3\Release\WetDelay.vst3 "%COMMONPROGRAMFILES%\VST3
 ## Project Structure
 
 ```
-g:/code/plugin/
-├── vst3sdk/                    # VST3 SDK (submodule)
-├── vst3projectgenerator/       # Project generator tool
+WetDelay/
+├── vst3sdk/                    # VST3 SDK (git submodule)
 ├── WetDelay/                   # Plugin source
 │   ├── source/
 │   │   ├── wetdelayprocessor.h/cpp    # Audio processing
@@ -166,12 +165,12 @@ g:/code/plugin/
 │   ├── resource/
 │   │   └── wetdelayeditor.uidesc      # GUI definition
 │   ├── CMakeLists.txt                 # Build configuration
-│   └── build/                         # Build output
+│   └── build/                         # Build output (generated)
 ├── build.bat                   # Build automation script
 ├── install.bat                 # Installation script
+├── LICENSE                     # MIT License
 ├── README.md                   # This file
-├── ARCHITECTURE.md             # Original JUCE architecture
-└── ARCHITECTURE_VST3.md        # Current VST3 architecture
+└── ARCHITECTURE_VST3.md        # VST3 architecture documentation
 ```
 
 ## Validation Results
@@ -267,14 +266,16 @@ Potential future additions:
 
 **Ronald Klarenbeek**
 - Email: yonie@yonie.org
-- GitHub: https://github.com/yonie
+- GitHub: [https://github.com/yonie](https://github.com/yonie)
 
 ## License
 
-Copyright © 2026 Yonie
+MIT License - Copyright © 2026 Ronald Klarenbeek (Yonie)
 
-This project uses the VST3 SDK which is licensed under BSD-style license.
-See the VST3 SDK license files for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**Note:** This project uses the VST3 SDK which is licensed under a BSD-style license.
+See the VST3 SDK license files for details on SDK licensing.
 
 ## Acknowledgments
 
