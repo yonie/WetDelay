@@ -1,18 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vstgui-ui-description version="1">
 	<fonts>
+		<font name="TinyFont" font-name="Arial" size="0"/>
 	</fonts>
+	
 	<colors>
+		<color name="White" rgba="#ffffffff"/>
+		<color name="Black" rgba="#000000ff"/>
+		<color name="Red" rgba="#ff0000ff"/>
+		<color name="BrightRed" rgba="#ff3333ff"/>
+		<color name="DarkRed" rgba="#440000ff"/>
+		<color name="Transparent" rgba="#00000000"/>
+		<color name="MeterGreen" rgba="#00ff00ff"/>
+		<color name="MeterBack" rgba="#0a1a0aee"/>
+		<color name="SemiTransparent" rgba="#00000044"/>
+		<color name="SelectionRed" rgba="#ff0000dd"/>
 	</colors>
-	<template background-color="~ BlackCColor" background-color-draw-style="filled and stroked" class="CViewContainer" mouse-enabled="true" name="view" opacity="1" origin="0, 0" size="300, 300" transparent="false" wants-focus="false"/>
+	
+	<control-tags>
+		<control-tag name="kDelayTimeParam" tag="0"/>
+		<control-tag name="kInputMeterL" tag="1"/>
+		<control-tag name="kInputMeterR" tag="2"/>
+		<control-tag name="kOutputMeterL" tag="3"/>
+		<control-tag name="kOutputMeterR" tag="4"/>
+	</control-tags>
+	
+	<!-- PRODUCTION UI WITH BACKPLATE -->
+	<template background-color="~ BlackCColor"
+	          bitmap="backplate"
+	          class="CViewContainer"
+	          name="view"
+	          size="702, 640"
+	          transparent="false">
+		
+		<!-- ============================================ -->
+		<!-- INPUT METERS (12-segment LED style)         -->
+		<!-- ============================================ -->
+		
+		<view class="LEDMeterView"
+		      control-tag="kInputMeterL"
+		      origin="52, 96"
+		      size="254, 18"
+		      num-segments="12"
+		      segment-gap="2"
+		      horizontal="true"
+		      transparent="false"/>
+		
+		<view class="LEDMeterView"
+		      control-tag="kInputMeterR"
+		      origin="52, 129"
+		      size="254, 18"
+		      num-segments="12"
+		      segment-gap="2"
+		      horizontal="true"
+		      transparent="false"/>
+		
+		<!-- ============================================ -->
+		<!-- OUTPUT METERS (12-segment LED style)        -->
+		<!-- ============================================ -->
+		
+		<view class="LEDMeterView"
+		      control-tag="kOutputMeterL"
+		      origin="397, 96"
+		      size="254, 18"
+		      num-segments="12"
+		      segment-gap="2"
+		      horizontal="true"
+		      transparent="false"/>
+		
+		<view class="LEDMeterView"
+		      control-tag="kOutputMeterR"
+		      origin="397, 129"
+		      size="254, 18"
+		      num-segments="12"
+		      segment-gap="2"
+		      horizontal="true"
+		      transparent="false"/>
+		
+		<!-- ============================================ -->
+		<!-- DELAY BUTTON SELECTION                       -->
+		<!-- Transparent CSegmentButton for click handling-->
+		<!-- ============================================ -->
+		
+		<view class="CSegmentButton"
+		      control-tag="kDelayTimeParam"
+		      origin="39, 459"
+		      size="630, 119"
+		      font="TinyFont"
+		      font-color="Transparent"
+		      font-color-highlighted="Transparent"
+		      frame-color="Transparent"
+		      frame-width="0"
+		      round-radius="0"
+		      segment-names=",,,,,,"
+		      selection-color="Transparent"
+		      style="horizontal"
+		      text-alignment="center"
+		      transparent="true"
+		      gradient-start-color="Transparent"
+		      gradient-end-color="Transparent"
+		      gradient-start-color-highlighted="Transparent"
+		      gradient-end-color-highlighted="Transparent"/>
+		
+		<!-- ============================================ -->
+		<!-- LED INDICATORS (80's style per button)      -->
+		<!-- ============================================ -->
+		
+		<view class="ButtonSelectionFrame"
+		      control-tag="kDelayTimeParam"
+		      origin="39, 459"
+		      size="630, 119"
+		      transparent="true"/>
+		
+	</template>
+	
 	<custom>
 		<attributes name="FocusDrawing"/>
-		<attributes Path="../..//WetDelay/resource/wetdelayeditor.uidesc" name="VST3Editor"/>
-		<attributes Grids="1x 1,5x 5,10x 10,12x 12,15x 15" name="UIGridController"/>
-		<attributes SelectedTemplate="view" name="UITemplateController"/>
-		<attributes EditViewScale="1" EditorSize="0, 0, 500, 545" SplitViewSize_0_0="0.7495183044315992804129678006574977189302" SplitViewSize_0_1="0.2119460500963391003104163701209472492337" SplitViewSize_1_0="0.4797687861271676124097496085596503689885" SplitViewSize_1_1="0.5105973025048169411377330106915906071663" SplitViewSize_2_0="0.6400000000000000133226762955018784850836" SplitViewSize_2_1="0.3499999999999999777955395074968691915274" TabSwitchValue="0" Version="1" name="UIEditController"/>
-		<attributes name="UIAttributesController"/>
-		<attributes SelectedRow="7" name="UIViewCreatorDataSource"/>
+		<attributes Path="wetdelayeditor.uidesc" name="VST3Editor"/>
 	</custom>
-	<bitmaps/>
+	
+	<bitmaps>
+		<bitmap name="backplate" path="backplate.jpg"/>
+	</bitmaps>
 </vstgui-ui-description>

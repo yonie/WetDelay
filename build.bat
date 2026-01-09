@@ -4,11 +4,14 @@ echo  WetDelay VST3 Plugin - Build Script
 echo ================================================
 echo.
 
-REM Check if build directory exists
-if not exist "WetDelay\build" (
-    echo Creating build directory...
-    mkdir WetDelay\build
+REM Clean build directory for fresh build
+if exist "WetDelay\build" (
+    echo Cleaning previous build...
+    rmdir /S /Q WetDelay\build
 )
+
+echo Creating fresh build directory...
+mkdir WetDelay\build
 
 cd WetDelay\build
 

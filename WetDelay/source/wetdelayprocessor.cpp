@@ -4,6 +4,7 @@
 
 #include "wetdelayprocessor.h"
 #include "wetdelaycids.h"
+#include "wetdelaycontroller.h"
 
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
@@ -74,6 +75,7 @@ tresult PLUGIN_API WetDelayProcessorProcessor::setActive (TBool state)
 		inputPeakR = 0.0f;
 		outputPeakL = 0.0f;
 		outputPeakR = 0.0f;
+		samplesSinceLastMeterUpdate = 0;
 	}
 	return AudioEffect::setActive (state);
 }
@@ -145,6 +147,14 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 				updatePeak(outputR[i], outputPeakR);
 			}
 			
+			// Send meter data via message every ~50ms (at 44100Hz that's ~2205 samples)
+			samplesSinceLastMeterUpdate += data.numSamples;
+			if (samplesSinceLastMeterUpdate >= meterUpdateInterval)
+			{
+				samplesSinceLastMeterUpdate = 0;
+				sendMeterData();
+			}
+			
 			// Output is not silent
 			output.silenceFlags = 0;
 		}
@@ -164,11 +174,35 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 }
 
 //------------------------------------------------------------------------
+void WetDelayProcessorProcessor::sendMeterData()
+{
+	// Create message to send meter data to controller
+	if (auto message = owned(allocateMessage()))
+	{
+		message->setMessageID(kMeterDataMessage);
+		
+		// Pack the four meter values
+		float meterData[4] = {
+			inputPeakL.load(),
+			inputPeakR.load(),
+			outputPeakL.load(),
+			outputPeakR.load()
+		};
+		
+		message->getAttributes()->setBinary("data", meterData, sizeof(meterData));
+		sendMessage(message);
+	}
+}
+
+//------------------------------------------------------------------------
 tresult PLUGIN_API WetDelayProcessorProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
 	// Initialize delay buffer with max delay time
 	delayBuffer.prepare(newSetup.sampleRate, 400);  // 400ms max
+	
+	// Calculate meter update interval (~50ms worth of samples)
+	meterUpdateInterval = static_cast<int32>(newSetup.sampleRate * 0.05);
 	
 	return AudioEffect::setupProcessing (newSetup);
 }

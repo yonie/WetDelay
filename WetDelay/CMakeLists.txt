@@ -33,6 +33,14 @@ smtg_add_vst3plugin(WetDelay
     source/wetdelayentry.cpp
     source/delaybuffer.h
     source/delaybuffer.cpp
+    source/ledmeterview.h
+    source/ledmeterview.cpp
+    source/buttonledindicator.h
+    source/buttonledindicator.cpp
+    source/buttonselectionframe.h
+    source/buttonselectionframe.cpp
+    source/customviewcreator.h
+    source/customviewcreator.cpp
 )
 
 #- VSTGUI Wanted ----
@@ -48,6 +56,7 @@ if(SMTG_ENABLE_VSTGUI_SUPPORT)
     smtg_target_add_plugin_resources(WetDelay
         RESOURCES
             "resource/wetdelayeditor.uidesc"
+            "../backplate.jpg"
     )
 endif(SMTG_ENABLE_VSTGUI_SUPPORT)
 # -------------------

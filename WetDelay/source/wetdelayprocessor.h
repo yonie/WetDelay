@@ -6,6 +6,7 @@
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
 #include "delaybuffer.h"
+#include "wetdelaycids.h"
 #include <atomic>
 
 namespace Yonie {
@@ -70,8 +71,15 @@ protected:
 	// Meter decay factor
 	static constexpr float METER_DECAY = 0.9995f;
 	
+	// Meter update timing
+	Steinberg::int32 samplesSinceLastMeterUpdate = 0;
+	Steinberg::int32 meterUpdateInterval = 2205;  // ~50ms at 44100Hz
+	
 	// Update peak meter
 	void updatePeak(float sample, std::atomic<float>& peak);
+	
+	// Send meter data to controller via message
+	void sendMeterData();
 };
 
 //------------------------------------------------------------------------

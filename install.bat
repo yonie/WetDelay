@@ -24,8 +24,15 @@ if not exist "%VST3_PATH%" (
     mkdir "%VST3_PATH%"
 )
 
+REM Clean existing installation first
+if exist "%VST3_PATH%\WetDelay.vst3" (
+    echo Removing old installation...
+    rmdir /S /Q "%VST3_PATH%\WetDelay.vst3"
+)
+
 REM Copy the plugin
-xcopy /Y /I "%PLUGIN_PATH%" "%VST3_PATH%\WetDelay.vst3\"
+echo Copying plugin files...
+xcopy /E /Y /I "%PLUGIN_PATH%" "%VST3_PATH%\WetDelay.vst3\"
 if errorlevel 1 (
     echo ERROR: Failed to copy plugin!
     echo You may need to run this script as Administrator.

@@ -6,6 +6,7 @@
 #include "wetdelaycids.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "base/source/fstreamer.h"
+#include "customviewcreator.h"
 
 using namespace Steinberg;
 
@@ -41,6 +42,16 @@ tresult PLUGIN_API WetDelayProcessorController::initialize (FUnknown* context)
 	delayParam->appendString(STR16("400 ms"));
 	
 	parameters.addParameter(delayParam);
+	
+	// Register read-only meter parameters for UI display
+	parameters.addParameter(STR16("Input Meter L"), nullptr, 0, 0,
+		Vst::ParameterInfo::kIsReadOnly, kInputMeterL);
+	parameters.addParameter(STR16("Input Meter R"), nullptr, 0, 0,
+		Vst::ParameterInfo::kIsReadOnly, kInputMeterR);
+	parameters.addParameter(STR16("Output Meter L"), nullptr, 0, 0,
+		Vst::ParameterInfo::kIsReadOnly, kOutputMeterL);
+	parameters.addParameter(STR16("Output Meter R"), nullptr, 0, 0,
+		Vst::ParameterInfo::kIsReadOnly, kOutputMeterR);
 
 	return result;
 }
@@ -66,6 +77,7 @@ tresult PLUGIN_API WetDelayProcessorController::setComponentState (IBStream* sta
 	int32 savedDelayIndex = 0;
 	if (streamer.readInt32(savedDelayIndex) == kResultTrue)
 	{
+		currentDelayIndex = savedDelayIndex;
 		// Convert index to normalized value and set parameter
 		setParamNormalized(kDelayTimeParam, savedDelayIndex / 5.0);
 	}
@@ -91,6 +103,58 @@ tresult PLUGIN_API WetDelayProcessorController::getState (IBStream* state)
 }
 
 //------------------------------------------------------------------------
+tresult PLUGIN_API WetDelayProcessorController::notify (Vst::IMessage* message)
+{
+	if (!message)
+		return kInvalidArgument;
+	
+	// Check if this is our meter data message
+	if (strcmp(message->getMessageID(), kMeterDataMessage) == 0)
+	{
+		const void* data = nullptr;
+		uint32 size = 0;
+		
+		if (message->getAttributes()->getBinary("data", data, size) == kResultOk)
+		{
+			if (size == 4 * sizeof(float))
+			{
+				const float* meterData = static_cast<const float*>(data);
+				
+				// Update meter parameters - this will automatically update the UI
+				setParamNormalized(kInputMeterL, meterData[0]);
+				setParamNormalized(kInputMeterR, meterData[1]);
+				setParamNormalized(kOutputMeterL, meterData[2]);
+				setParamNormalized(kOutputMeterR, meterData[3]);
+				
+				return kResultOk;
+			}
+		}
+	}
+	
+	return EditControllerEx1::notify(message);
+}
+
+//------------------------------------------------------------------------
+void WetDelayProcessorController::setDelayIndexFromUI(int index)
+{
+	if (index >= 0 && index <= 5)
+	{
+		currentDelayIndex = index;
+		// Convert to normalized value and update parameter
+		Vst::ParamValue normalizedValue = index / 5.0;
+		setParamNormalized(kDelayTimeParam, normalizedValue);
+		
+		// Notify host of parameter change
+		if (componentHandler)
+		{
+			componentHandler->beginEdit(kDelayTimeParam);
+			componentHandler->performEdit(kDelayTimeParam, normalizedValue);
+			componentHandler->endEdit(kDelayTimeParam);
+		}
+	}
+}
+
+//------------------------------------------------------------------------
 IPlugView* PLUGIN_API WetDelayProcessorController::createView (FIDString name)
 {
 	// Here the Host wants to open your editor (if you have one)
@@ -101,6 +165,45 @@ IPlugView* PLUGIN_API WetDelayProcessorController::createView (FIDString name)
 		return view;
 	}
 	return nullptr;
+}
+
+//------------------------------------------------------------------------
+// DelayButtonController Implementation (simplified - may not be needed with CSegmentButton)
+//------------------------------------------------------------------------
+DelayButtonController::DelayButtonController(VSTGUI::IController* parentController,
+                                              WetDelayProcessorController* mainCtrl)
+    : DelegationController(parentController)
+    , mainController(mainCtrl)
+{
+}
+
+//------------------------------------------------------------------------
+VSTGUI::CView* DelayButtonController::createView(const VSTGUI::UIAttributes& attributes,
+                                                  const VSTGUI::IUIDescription* description)
+{
+    // Let parent create the view
+    return DelegationController::createView(attributes, description);
+}
+
+//------------------------------------------------------------------------
+VSTGUI::CView* DelayButtonController::verifyView(VSTGUI::CView* view,
+                                                  const VSTGUI::UIAttributes& attributes,
+                                                  const VSTGUI::IUIDescription* description)
+{
+    return DelegationController::verifyView(view, attributes, description);
+}
+
+//------------------------------------------------------------------------
+void DelayButtonController::valueChanged(VSTGUI::CControl* control)
+{
+    // Forward to parent controller
+    DelegationController::valueChanged(control);
+}
+
+//------------------------------------------------------------------------
+void DelayButtonController::updateLEDIndicators(int selectedIndex)
+{
+    // Not needed with CSegmentButton - it handles visual state automatically
 }
 
 //------------------------------------------------------------------------

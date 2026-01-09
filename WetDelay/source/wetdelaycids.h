@@ -14,13 +14,34 @@ static const Steinberg::FUID kWetDelayProcessorControllerUID (0xBDABF70B, 0xE045
 
 #define WetDelayProcessorVST3Category "Fx|Delay"
 
+// Message ID for meter data communication between processor and controller
+inline const char* kMeterDataMessage = "MeterData";
+
 //------------------------------------------------------------------------
 // Parameter IDs
 //------------------------------------------------------------------------
 enum WetDelayParams : Steinberg::Vst::ParamID
 {
 	kDelayTimeParam = 0,  // 0-5 for 6 delay positions
-	kParamCount
+	
+	// Output-only meter parameters for UI display
+	kInputMeterL = 1,
+	kInputMeterR = 2,
+	kOutputMeterL = 3,
+	kOutputMeterR = 4,
+	
+	kParamCount = 5
+};
+
+// Button control tags (100-105 for the 6 delay buttons)
+enum ButtonTags
+{
+	kDelayButton0 = 100,
+	kDelayButton1 = 101,
+	kDelayButton2 = 102,
+	kDelayButton3 = 103,
+	kDelayButton4 = 104,
+	kDelayButton5 = 105
 };
 
 //------------------------------------------------------------------------
