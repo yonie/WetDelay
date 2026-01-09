@@ -54,18 +54,25 @@ install.bat
 
 ### Step 1: Prerequisites
 
-Ensure you have the following installed:
+Install the required build tools using winget (Windows Package Manager):
+
+```batch
+winget install Git.Git
+winget install Kitware.CMake
+winget install Microsoft.VisualStudio.2022.BuildTools
+```
+
+Or download manually:
 - [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) (Build Tools or Community)
 - [CMake](https://cmake.org/download/) (3.15+)
 - [Git](https://git-scm.com/downloads)
 
-### Step 2: Clone or Verify Setup
+### Step 2: Clone VST3 SDK
 
-If you cloned this repository, the VST3 SDK and generator are already set up. If not:
+If the `vst3sdk` folder is not present, clone it:
 
 ```batch
 git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
-git clone https://github.com/steinbergmedia/vst3projectgenerator.git
 ```
 
 ### Step 3: Build
@@ -174,8 +181,7 @@ WetDelay/
 ├── build.bat                   # Build automation script
 ├── install.bat                 # Installation script
 ├── LICENSE                     # MIT License
-├── README.md                   # This file
-└── ARCHITECTURE_VST3.md        # VST3 architecture documentation
+└── README.md                   # This file
 ```
 
 ## Validation Results
