@@ -3,8 +3,11 @@
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![VST3](https://img.shields.io/badge/VST3-Compatible-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
 A professional stereo delay VST3 plugin with authentic 80s rack-style digital delay character.
+
+![WetDelay Plugin Screenshot](screenshot.png)
 
 ## Features
 
