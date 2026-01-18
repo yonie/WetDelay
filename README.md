@@ -261,7 +261,8 @@ Test coverage includes:
 ## Author
 
 **Ronald Klarenbeek**
-- Email: yonie@yonie.org
+- Website: [https://wetvst.com](https://wetvst.com)
+- Email: contact@wetvst.com
 - GitHub: [https://github.com/yonie](https://github.com/yonie)
 
 ## License
