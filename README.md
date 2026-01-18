@@ -258,21 +258,6 @@ Test coverage includes:
 - Different buffer sizes
 - Various sample rates
 
-## Roadmap / Future Enhancements
-
-Current version is **v1.1** - 80s Rack-Style Character
-
-Potential future additions:
-- [ ] Enhanced GUI matching backplate.jpg reference
-- [ ] Custom LED-style level meters
-- [ ] Feedback control
-- [ ] Tempo sync mode
-- [ ] Ping-pong stereo delay
-- [ ] Preset management
-- [ ] Additional delay times
-- [ ] Adjustable bit depth (8-16 bit)
-- [ ] Adjustable internal sample rate
-
 ## Author
 
 **Ronald Klarenbeek**
