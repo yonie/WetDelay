@@ -56,7 +56,7 @@ if(SMTG_ENABLE_VSTGUI_SUPPORT)
     smtg_target_add_plugin_resources(WetDelay
         RESOURCES
             "resource/wetdelayeditor.uidesc"
-            "../backplate.jpg"
+            "../backplate.png"
     )
 endif(SMTG_ENABLE_VSTGUI_SUPPORT)
 # -------------------
@@ -95,4 +95,8 @@ elseif(SMTG_WIN)
             "--pluginfolder \"$(OutDir)/\""
         )
     endif()
+elseif(SMTG_LINUX)
+    # Linux uses default settings
+    # Plugin will be built to: build/VST3/WetDelay.vst3/Contents/x86_64-linux/WetDelay.so
+    # Install location: ~/.vst3/ or /usr/lib/vst3/
 endif(SMTG_MAC)

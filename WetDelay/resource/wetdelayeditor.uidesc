@@ -120,6 +120,6 @@
 	</custom>
 	
 	<bitmaps>
-		<bitmap name="backplate" path="backplate.jpg"/>
+		<bitmap name="backplate" path="backplate.png"/>
 	</bitmaps>
 </vstgui-ui-description>

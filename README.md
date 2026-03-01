@@ -2,7 +2,7 @@
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![VST3](https://img.shields.io/badge/VST3-Compatible-blue)
-![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey)
 ![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
 A professional stereo delay VST3 plugin with authentic 80s rack-style digital delay character.
@@ -28,16 +28,32 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 
 ## System Requirements
 
+### Windows
 - **Operating System**: Windows 10/11 (64-bit)
 - **Build Tools**: 
   - Visual Studio 2022 Build Tools or Community Edition
   - CMake 3.15 or higher
   - Git
 
+### Linux
+- **Operating System**: Linux (x86_64)
+- **Build Tools**:
+  - GCC or Clang with C++17 support
+  - CMake 3.15 or higher
+  - Git
+- **Dependencies** (Ubuntu/Debian):
+  ```
+  sudo apt-get install cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
+      libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
+      libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
+      libxcb-keysyms1-dev git
+  ```
+
 ## Quick Start
 
 ### Building the Plugin
 
+#### Windows
 1. **Clone and build in one step:**
 ```batch
 build.bat
@@ -48,12 +64,39 @@ build.bat
 install.bat
 ```
 
+#### Linux
+1. **Install dependencies:**
+```bash
+sudo apt-get install cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
+    libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
+    libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
+    libxcb-keysyms1-dev git
+```
+
+2. **Clone VST3 SDK:**
+```bash
+git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
+```
+
+3. **Build:**
+```bash
+chmod +x build.sh
+./build.sh
+```
+
+4. **Install to user VST3 folder:**
+```bash
+chmod +x install.sh
+./install.sh
+```
+
 3. **Load in your DAW** and start using!
 
 ## Detailed Build Instructions
 
 ### Step 1: Prerequisites
 
+#### Windows
 Install the required build tools using winget (Windows Package Manager):
 
 ```batch
@@ -67,6 +110,28 @@ Or download manually:
 - [CMake](https://cmake.org/download/) (3.15+)
 - [Git](https://git-scm.com/downloads)
 
+#### Linux
+Install the required packages:
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
+    libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
+    libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
+    libxcb-keysyms1-dev git
+```
+
+**Fedora/RHEL:**
+```bash
+sudo dnf install cmake gcc gcc-c++ libstdc++-devel libxcb-devel libxkbcommon-devel \
+    libxkbcommon-x11-devel cairo-devel gtkmm30-devel sqlite-devel
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S cmake gcc libxcb libxkbcommon cairo gtkmm3 sqlite
+```
+
 ### Step 2: Clone VST3 SDK
 
 If the `vst3sdk` folder is not present, clone it:
@@ -77,6 +142,7 @@ git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
 
 ### Step 3: Build
 
+#### Windows
 Run the automated build script:
 
 ```batch
@@ -89,8 +155,23 @@ This will:
 - Run the VST3 validator (47 automated tests)
 - Output: `WetDelay\build\VST3\Release\WetDelay.vst3`
 
+#### Linux
+Run the automated build script:
+
+```bash
+chmod +x build.sh
+./build.sh
+```
+
+This will:
+- Configure CMake with GCC/Clang
+- Build the plugin in Release mode
+- Run the VST3 validator (47 automated tests)
+- Output: `WetDelay/build/VST3/WetDelay.vst3`
+
 ### Step 4: Install
 
+#### Windows
 To install the plugin to your system's VST3 folder:
 
 ```batch
@@ -99,12 +180,36 @@ install.bat
 
 **Note**: You may need to run as Administrator if you encounter permission errors.
 
+#### Linux
+To install the plugin to your user VST3 folder:
+
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+This installs to `~/.vst3/WetDelay.vst3`
+
 ### Manual Installation
 
+#### Windows
 Alternatively, copy the built plugin manually:
 
 ```batch
 xcopy /Y /I WetDelay\build\VST3\Release\WetDelay.vst3 "%COMMONPROGRAMFILES%\VST3\WetDelay.vst3\"
+```
+
+#### Linux
+Alternatively, copy the built plugin manually:
+
+```bash
+mkdir -p ~/.vst3
+cp -r WetDelay/build/VST3/WetDelay.vst3 ~/.vst3/
+```
+
+Or system-wide installation:
+```bash
+sudo cp -r WetDelay/build/VST3/WetDelay.vst3 /usr/lib/vst3/
 ```
 
 ## Usage
@@ -137,7 +242,7 @@ xcopy /Y /I WetDelay\build\VST3\Release\WetDelay.vst3 "%COMMONPROGRAMFILES%\VST3
 
 - **Framework**: VST3 SDK (Official Steinberg)
 - **Language**: C++17
-- **Build System**: CMake + MSBuild
+- **Build System**: CMake (MSBuild on Windows, Make on Linux)
 - **GUI**: VSTGUI4
 
 ### Audio Processing
@@ -203,6 +308,7 @@ Key validations:
 
 ### Build Errors
 
+#### Windows
 **CMake configuration failed:**
 - Ensure Visual Studio 2022 is installed
 - Verify CMake is in your PATH
@@ -212,8 +318,23 @@ Key validations:
 - Make sure Visual Studio 2022 Build Tools are installed
 - Try running from "Developer Command Prompt for VS 2022"
 
+#### Linux
+**CMake configuration failed:**
+- Ensure all dependencies are installed
+- Verify CMake version is 3.15 or higher: `cmake --version`
+- Check that vst3sdk exists in the correct location
+
+**Build error - missing headers:**
+- Install the required development packages listed in Prerequisites
+- On Debian/Ubuntu, ensure you have `libxcb-util-dev` (not `libxcb-util0-dev`)
+
+**GCC version error:**
+- Ensure you have GCC 8 or higher for C++17 support
+- Check with: `gcc --version`
+
 ### Installation Issues
 
+#### Windows
 **Symlink error (exit code 1):**
 - This is normal - the plugin is still built successfully
 - Run `install.bat` to copy the plugin manually
@@ -223,6 +344,17 @@ Key validations:
 - Restart your DAW after installation
 - Check VST3 scan path: `%COMMONPROGRAMFILES%\VST3\`
 - Verify the folder contains `WetDelay.vst3`
+
+#### Linux
+**Permission denied:**
+- Make sure the scripts are executable: `chmod +x build.sh install.sh`
+- For system-wide install, use sudo: `sudo ./install.sh` (modifies script)
+
+**Plugin not appearing in DAW:**
+- Restart your DAW after installation
+- Check VST3 scan path: `~/.vst3/` or `/usr/lib/vst3/`
+- Verify the folder contains `WetDelay.vst3`
+- Some DAWs need manual path configuration in settings
 
 ### Runtime Issues
 
