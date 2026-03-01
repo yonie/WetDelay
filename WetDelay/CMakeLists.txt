@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14.0)
 option(SMTG_ENABLE_VST3_PLUGIN_EXAMPLES "Enable VST 3 Plug-in Examples" OFF)
 option(SMTG_ENABLE_VST3_HOSTING_EXAMPLES "Enable VST 3 Hosting Examples" OFF)
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12 CACHE STRING "")
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "")
 
 set(vst3sdk_SOURCE_DIR "../vst3sdk")
 if(NOT vst3sdk_SOURCE_DIR)
