@@ -15,8 +15,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Clone VST3 SDK
+        run: git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
 
       - name: Build
         run: ./build.bat
@@ -26,8 +27,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Clone VST3 SDK
+        run: git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
 
       - name: Install dependencies
         run: |
@@ -47,8 +49,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Clone VST3 SDK
+        run: git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
 
       - name: Build
         run: |
