@@ -1,0 +1,56 @@
+name: Test Build
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'main'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build
+        run: ./build.bat
+
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
+            libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
+            libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
+            libxcb-keysyms1-dev
+
+      - name: Build
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+  build-macos:
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build
+        run: |
+          chmod +x build.sh
+          ./build.sh

@@ -1,0 +1,121 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build
+        run: ./build.bat
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: WetDelay/build/VST3/Release/WetDelay.vst3/
+          retention-days: 1
+
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
+            libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
+            libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
+            libxcb-keysyms1-dev
+
+      - name: Build
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: WetDelay/build/VST3/Release/WetDelay.vst3/
+          retention-days: 1
+
+  build-macos:
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: WetDelay/build/VST3/Release/WetDelay.vst3/
+          retention-days: 1
+
+  merge-and-release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+          path: artifacts/windows
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-build
+          path: artifacts/linux
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-build
+          path: artifacts/macos
+
+      - name: Merge into universal VST3
+        run: |
+          chmod +x scripts/merge-vst3.sh
+          ./scripts/merge-vst3.sh
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create ZIP archive
+        run: |
+          cd build
+          zip -r ../WetDelay-${{ steps.get_version.VERSION }}.zip WetDelay.vst3
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: WetDelay-${{ steps.get_version.VERSION }}.zip
+          generate_release_notes: true
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

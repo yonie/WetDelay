@@ -2,7 +2,7 @@
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![VST3](https://img.shields.io/badge/VST3-Compatible-blue)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 ![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
 A professional stereo delay VST3 plugin with authentic 80s rack-style digital delay character.
@@ -90,7 +90,30 @@ chmod +x install.sh
 ./install.sh
 ```
 
-3. **Load in your DAW** and start using!
+#### macOS
+1. **Install Xcode Command Line Tools:**
+```bash
+xcode-select --install
+```
+
+2. **Clone VST3 SDK:**
+```bash
+git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
+```
+
+3. **Build:**
+```bash
+chmod +x build.sh
+./build.sh
+```
+
+4. **Install to user VST3 folder:**
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+5. **Load in your DAW** and start using!
 
 ## Detailed Build Instructions
 
@@ -132,6 +155,18 @@ sudo dnf install cmake gcc gcc-c++ libstdc++-devel libxcb-devel libxkbcommon-dev
 sudo pacman -S cmake gcc libxcb libxkbcommon cairo gtkmm3 sqlite
 ```
 
+#### macOS
+Install Xcode Command Line Tools:
+
+```bash
+xcode-select --install
+```
+
+Homebrew packages (optional, for additional dependencies):
+```bash
+brew install cmake
+```
+
 ### Step 2: Clone VST3 SDK
 
 If the `vst3sdk` folder is not present, clone it:
@@ -167,7 +202,21 @@ This will:
 - Configure CMake with GCC/Clang
 - Build the plugin in Release mode
 - Run the VST3 validator (47 automated tests)
-- Output: `WetDelay/build/VST3/WetDelay.vst3`
+- Output: `WetDelay/build/VST3/Release/WetDelay.vst3`
+
+#### macOS
+Run the automated build script:
+
+```bash
+chmod +x build.sh
+./build.sh
+```
+
+This will:
+- Configure CMake with Clang
+- Build the plugin in Release mode
+- Run the VST3 validator (47 automated tests)
+- Output: `WetDelay/build/VST3/Release/WetDelay.vst3`
 
 ### Step 4: Install
 
@@ -189,6 +238,20 @@ chmod +x install.sh
 ```
 
 This installs to `~/.vst3/WetDelay.vst3`
+
+#### macOS
+To install the plugin to your user VST3 folder:
+
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+This installs to `~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
+
+**Note for macOS:** The plugin is unsigned. On first load, you may need to:
+- Right-click the plugin and select "Open" 
+- Or run: `xattr -cr ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
 
 ### Manual Installation
 
