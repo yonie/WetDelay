@@ -3,7 +3,7 @@
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![VST3](https://img.shields.io/badge/VST3-Compatible-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
-![Version](https://img.shields.io/badge/version-1.0.0-orange)
+![Version](https://img.shields.io/badge/version-1.1.0-orange)
 
 A professional stereo delay VST3 plugin with authentic 80s rack-style digital delay character.
 
@@ -485,18 +485,11 @@ See the VST3 SDK license files for details on SDK licensing.
 
 ## Version History
 
-### v1.2.0 (2026-01-09)
-- **Channel Crosstalk**:
-  - Authentic -40 dB (1%) L/R channel bleed
-  - Simulates analog circuitry imperfections
-  
-### v1.1.0 (2026-01-09)
-- **80s Rack-Style Character**:
-  - 24 kHz internal sample rate with resampling
-  - 12-bit quantization (4096 levels)
-  - TPDF dither for smooth quantization
-  - Fixed -80 dBFS noise floor
-  - Anti-aliasing and reconstruction filters
+### v1.1.0 (2026-03-01)
+- **Multi-Platform Support**:
+  - Universal VST3 bundle for Windows, Linux (x86_64), and macOS (arm64)
+  - GitHub Actions CI/CD for automated cross-platform builds
+  - Single download contains all platform binaries
 
 ### v1.0.0 (2026-01-07)
 - Initial release
@@ -506,6 +499,15 @@ See the VST3 SDK license files for details on SDK licensing.
 - Input/output peak metering
 - Full VST3 automation support
 - Validated with official VST3 validator
+- **80s Rack-Style Character**:
+  - 24 kHz internal sample rate with resampling
+  - 12-bit quantization (4096 levels)
+  - TPDF dither for smooth quantization
+  - Fixed -80 dBFS noise floor
+  - Anti-aliasing and reconstruction filters
+- **Channel Crosstalk**:
+  - Authentic -40 dB (1%) L/R channel bleed
+  - Simulates analog circuitry imperfections
 
 ---
 
