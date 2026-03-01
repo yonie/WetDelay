@@ -22,11 +22,13 @@ cp -r artifacts/linux/Contents/Resources/* build/WetDelay.vst3/Contents/Resource
 
 # Copy Windows binary
 echo "Copying Windows binary..."
-if [ -f "artifacts/windows/Contents/x86_64-win/WetDelay.dll" ]; then
+if [ -f "artifacts/windows/VST3/Release/WetDelay.vst3/Contents/x86_64-win/WetDelay.dll" ]; then
+    cp artifacts/windows/VST3/Release/WetDelay.vst3/Contents/x86_64-win/WetDelay.dll build/WetDelay.vst3/Contents/x86_64-win/
+elif [ -f "artifacts/windows/Contents/x86_64-win/WetDelay.dll" ]; then
     cp artifacts/windows/Contents/x86_64-win/WetDelay.dll build/WetDelay.vst3/Contents/x86_64-win/
 else
-    echo "WARNING: Windows binary not found at artifacts/windows/Contents/x86_64-win/WetDelay.dll"
-    ls -la artifacts/windows/Contents/ 2>/dev/null || echo "Windows artifact directory structure:"
+    echo "WARNING: Windows binary not found"
+    echo "Looking for Windows binary..."
     find artifacts/windows -name "*.dll" 2>/dev/null || echo "No DLL files found"
 fi
 
@@ -42,22 +44,15 @@ fi
 
 # Copy macOS binary (may be in different location for Xcode builds)
 echo "Copying macOS binary..."
-if [ -f "artifacts/macos/Contents/arm64-macos/WetDelay" ]; then
+if [ -f "artifacts/macos/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay" ]; then
+    cp artifacts/macos/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
+elif [ -f "artifacts/macos/Contents/arm64-macos/WetDelay" ]; then
     cp artifacts/macos/Contents/arm64-macos/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
 elif [ -f "artifacts/macos/Contents/MacOS/WetDelay" ]; then
-    # Some builds use MacOS instead of arm64-macos
     cp artifacts/macos/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
-elif [ -d "artifacts/macos/Release/WetDelay.vst3" ]; then
-    # Xcode build outputs to Release/ directory
-    echo "Found Xcode build output, copying from Release/..."
-    # Copy the binary
-    if [ -f "artifacts/macos/Release/WetDelay.vst3/Contents/MacOS/WetDelay" ]; then
-        cp artifacts/macos/Release/WetDelay.vst3/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
-    fi
 else
     echo "WARNING: macOS binary not found"
     echo "Looking for macOS binary..."
-    ls -la artifacts/macos/Contents/ 2>/dev/null || echo "macOS artifact directory structure:"
     find artifacts/macos -type f -name "WetDelay" 2>/dev/null || echo "No WetDelay executable found"
 fi
 

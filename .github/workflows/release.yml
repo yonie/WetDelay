@@ -117,8 +117,11 @@ jobs:
 
       - name: Create ZIP archive
         run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
           cd build
-          zip -r ../WetDelay-${{ steps.get_version.VERSION }}.zip WetDelay.vst3
+          zip -r "../WetDelay-${VERSION}.zip" WetDelay.vst3
+          echo "Created: WetDelay-${VERSION}.zip"
+          ls -la "../WetDelay-${VERSION}.zip"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1

@@ -14,7 +14,7 @@ project(WetDelay
     # This is your plug-in version number. Change it here only.
     # Version number symbols usable in C++ can be found in
     # source/version.h and ${PROJECT_BINARY_DIR}/projectversion.h.
-    VERSION 1.0.0.0 
+    VERSION 1.1.0.0 
     DESCRIPTION "WetDelay VST 3 Plug-in"
 )
 
