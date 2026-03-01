@@ -71,9 +71,9 @@ jobs:
       - name: Validate macOS plugin
         run: |
           echo "Running VST3 validator (47 tests)..."
-          # macOS builds validator in WetDelay/build/bin/Release/
+          # macOS Xcode builds to WetDelay/build/VST3/Release/WetDelay.vst3/
           if [ -f "WetDelay/build/bin/Release/validator" ]; then
-            ./WetDelay/build/bin/Release/validator "WetDelay/build/Release/WetDelay.vst3"
+            ./WetDelay/build/bin/Release/validator "WetDelay/build/VST3/Release/WetDelay.vst3"
           else
             echo "Validator not found, checking alternative locations..."
             find . -name "validator" -type f 2>/dev/null
