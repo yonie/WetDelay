@@ -275,6 +275,14 @@ Or system-wide installation:
 sudo cp -r WetDelay/build/VST3/WetDelay.vst3 /usr/lib/vst3/
 ```
 
+#### macOS
+Alternatively, copy the built plugin manually:
+
+```bash
+mkdir -p ~/Library/Audio/Plug-Ins/VST3
+cp -r WetDelay/build/VST3/Release/WetDelay.vst3 ~/Library/Audio/Plug-Ins/VST3/
+```
+
 ## Usage
 
 1. **Load the plugin** in your DAW (Reaper, Cubase, Ableton Live, FL Studio, etc.)
