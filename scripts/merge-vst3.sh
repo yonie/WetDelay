@@ -40,13 +40,20 @@ else
     find artifacts/linux -name "*.so" 2>/dev/null || echo "No SO files found"
 fi
 
-# Copy macOS binary
+# Copy macOS binary (may be in different location for Xcode builds)
 echo "Copying macOS binary..."
 if [ -f "artifacts/macos/Contents/arm64-macos/WetDelay" ]; then
     cp artifacts/macos/Contents/arm64-macos/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
 elif [ -f "artifacts/macos/Contents/MacOS/WetDelay" ]; then
     # Some builds use MacOS instead of arm64-macos
     cp artifacts/macos/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
+elif [ -d "artifacts/macos/Release/WetDelay.vst3" ]; then
+    # Xcode build outputs to Release/ directory
+    echo "Found Xcode build output, copying from Release/..."
+    # Copy the binary
+    if [ -f "artifacts/macos/Release/WetDelay.vst3/Contents/MacOS/WetDelay" ]; then
+        cp artifacts/macos/Release/WetDelay.vst3/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
+    fi
 else
     echo "WARNING: macOS binary not found"
     echo "Looking for macOS binary..."

@@ -7,17 +7,22 @@ echo ""
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-PLUGIN_SOURCE="WetDelay/build/VST3/Release/WetDelay.vst3"
-
-# Detect platform
+# Detect platform and set paths
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
-    PLUGIN_DEST="$HOME/Library/Audio/Plug-Ins/VST3"
     PLATFORM="macOS"
+    PLUGIN_DEST="$HOME/Library/Audio/Plug-Ins/VST3"
+    # macOS Xcode build outputs to Release/ directory
+    if [ -d "WetDelay/build/Release/WetDelay.vst3" ]; then
+        PLUGIN_SOURCE="WetDelay/build/Release/WetDelay.vst3"
+    else
+        PLUGIN_SOURCE="WetDelay/build/VST3/Release/WetDelay.vst3"
+    fi
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Linux
-    PLUGIN_DEST="$HOME/.vst3"
     PLATFORM="Linux"
+    PLUGIN_DEST="$HOME/.vst3"
+    PLUGIN_SOURCE="WetDelay/build/VST3/Release/WetDelay.vst3"
 else
     echo "ERROR: Unsupported platform: $OSTYPE"
     echo "This script only supports Linux and macOS."

@@ -72,7 +72,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-build
-          path: WetDelay/build/VST3/Release/WetDelay.vst3/
+          path: |
+            WetDelay/build/Release/WetDelay.vst3/
+            WetDelay/build/VST3/Release/WetDelay.vst3/
+          if-no-files-found: warn
           retention-days: 1
 
   merge-and-release:
