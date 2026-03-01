@@ -93,15 +93,21 @@ echo "Copying shared resources..."
 cp -r artifacts/linux/Contents/Resources/* build/WetDelay.vst3/Contents/Resources/
 
 # Copy Windows binary
+# Note: On Windows, the binary is named WetDelay.vst3, not WetDelay.dll
 echo "Copying Windows binary..."
-if [ -f "artifacts/windows/VST3/Release/WetDelay.vst3/Contents/x86_64-win/WetDelay.dll" ]; then
-    cp artifacts/windows/VST3/Release/WetDelay.vst3/Contents/x86_64-win/WetDelay.dll build/WetDelay.vst3/Contents/x86_64-win/
+if [ -f "artifacts/windows/Contents/x86_64-win/WetDelay.vst3" ]; then
+    cp artifacts/windows/Contents/x86_64-win/WetDelay.vst3 build/WetDelay.vst3/Contents/x86_64-win/WetDelay.dll
+    echo "  Found and renamed to WetDelay.dll"
 elif [ -f "artifacts/windows/Contents/x86_64-win/WetDelay.dll" ]; then
     cp artifacts/windows/Contents/x86_64-win/WetDelay.dll build/WetDelay.vst3/Contents/x86_64-win/
+    echo "  Found at artifacts/windows/Contents/x86_64-win/WetDelay.dll"
+elif [ -f "artifacts/windows/VST3/Release/WetDelay.vst3/Contents/x86_64-win/WetDelay.vst3" ]; then
+    cp artifacts/windows/VST3/Release/WetDelay.vst3/Contents/x86_64-win/WetDelay.vst3 build/WetDelay.vst3/Contents/x86_64-win/WetDelay.dll
+    echo "  Found and renamed to WetDelay.dll"
 else
-    echo "WARNING: Windows binary not found"
+    echo "WARNING: Windows binary not found!"
     echo "Looking for Windows binary..."
-    find artifacts/windows -name "*.dll" 2>/dev/null || echo "No DLL files found"
+    find artifacts/windows -name "*.dll" -o -name "WetDelay.vst3" 2>/dev/null | head -5
 fi
 
 # Copy Linux binary
