@@ -134,10 +134,15 @@ jobs:
           chmod +x scripts/merge-vst3.sh
           ./scripts/merge-vst3.sh
 
-      - name: Verify macOS binary signature in universal bundle
+      - name: Code sign universal VST3 bundle
         run: |
-          echo "Verifying macOS binary signature in universal bundle..."
-          codesign -v build/WetDelay.vst3/Contents/arm64-macos/WetDelay
+          echo "Re-signing universal VST3 bundle for macOS..."
+          codesign --force --deep --sign - build/WetDelay.vst3
+
+      - name: Verify universal bundle signature
+        run: |
+          echo "Verifying universal bundle signature..."
+          codesign -v build/WetDelay.vst3
 
       - name: Create ZIP archive
         run: |
