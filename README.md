@@ -49,6 +49,13 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
       libxcb-keysyms1-dev git
   ```
 
+### macOS
+- **Operating System**: macOS 10.13 or higher (Intel) / macOS 11.0 or higher (Apple Silicon)
+- **Build Tools**:
+  - Xcode Command Line Tools or Xcode
+  - CMake 3.15 or higher
+  - Git
+
 ## Quick Start
 
 ### Building the Plugin
@@ -403,6 +410,16 @@ Key validations:
 - Ensure you have GCC 8 or higher for C++17 support
 - Check with: `gcc --version`
 
+#### macOS
+**CMake configuration failed:**
+- Ensure Xcode Command Line Tools are installed: `xcode-select --install`
+- Verify CMake is installed: `cmake --version`
+- Check that vst3sdk exists in the correct location
+
+**Clang version error:**
+- Ensure you have Xcode 10 or higher for C++17 support
+- Check with: `clang --version`
+
 ### Installation Issues
 
 #### Windows
@@ -426,6 +443,21 @@ Key validations:
 - Check VST3 scan path: `~/.vst3/` or `/usr/lib/vst3/`
 - Verify the folder contains `WetDelay.vst3`
 - Some DAWs need manual path configuration in settings
+
+#### macOS
+**Permission denied:**
+- Make sure the scripts are executable: `chmod +x build.sh install.sh`
+
+**Plugin not appearing in DAW:**
+- Restart your DAW after installation
+- Check VST3 scan path: `~/Library/Audio/Plug-Ins/VST3/`
+- Verify the folder contains `WetDelay.vst3`
+
+**"Apple could not verify..." or "Unidentified developer" warning:**
+- Builds from v1.1.0-test5 onwards include ad-hoc code signing
+- You'll see a one-time prompt - click "Open" to proceed
+- For older builds or if blocked: right-click the plugin → "Open" → "Open"
+- Or remove quarantine: `xattr -cr ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
 
 ### Runtime Issues
 

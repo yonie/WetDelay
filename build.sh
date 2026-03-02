@@ -82,7 +82,18 @@ if [ "$PLATFORM" = "macos" ]; then
     if [ -d "Release/WetDelay.vst3" ]; then
         echo "Plugin location: WetDelay/build/Release/WetDelay.vst3"
         echo ""
-        echo "Step 3: Running VST3 validator..."
+        
+        echo "Step 3: Code signing for macOS..."
+        echo "================================================"
+        codesign --force --deep --sign - "Release/WetDelay.vst3"
+        if [ $? -eq 0 ]; then
+            echo "Plugin signed successfully (ad-hoc signature)"
+        else
+            echo "WARNING: Code signing failed, but plugin may still work"
+        fi
+        echo ""
+        
+        echo "Step 4: Running VST3 validator..."
         echo "================================================"
         if [ -f "../vst3sdk/build/bin/validator" ]; then
             ../vst3sdk/build/bin/validator "Release/WetDelay.vst3"
