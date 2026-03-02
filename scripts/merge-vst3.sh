@@ -93,6 +93,24 @@ if [ "$MACOS_FOUND" = false ]; then
     find artifacts/macos -type f -name "WetDelay" 2>/dev/null | head -5 || echo "No WetDelay executable found"
 fi
 
+# Copy macOS bundle metadata (Info.plist, PkgInfo) for codesign compatibility
+echo "Copying macOS bundle metadata..."
+MACOS_PLIST_FOUND=false
+if [ -f "artifacts/macos/VST3/Release/WetDelay.vst3/Contents/Info.plist" ]; then
+    cp artifacts/macos/VST3/Release/WetDelay.vst3/Contents/Info.plist build/WetDelay.vst3/Contents/
+    [ -f "artifacts/macos/VST3/Release/WetDelay.vst3/Contents/PkgInfo" ] && cp artifacts/macos/VST3/Release/WetDelay.vst3/Contents/PkgInfo build/WetDelay.vst3/Contents/
+    echo "  Found at artifacts/macos/VST3/Release/WetDelay.vst3/Contents/"
+    MACOS_PLIST_FOUND=true
+elif [ -f "artifacts/macos/Contents/Info.plist" ]; then
+    cp artifacts/macos/Contents/Info.plist build/WetDelay.vst3/Contents/
+    [ -f "artifacts/macos/Contents/PkgInfo" ] && cp artifacts/macos/Contents/PkgInfo build/WetDelay.vst3/Contents/
+    echo "  Found at artifacts/macos/Contents/"
+    MACOS_PLIST_FOUND=true
+fi
+if [ "$MACOS_PLIST_FOUND" = false ]; then
+    echo "WARNING: macOS Info.plist not found - codesign may fail!"
+fi
+
 echo ""
 echo "================================================"
 echo " Universal VST3 bundle created!"
