@@ -57,9 +57,9 @@ if [ $? -eq 0 ]; then
     
     if [[ "$PLATFORM" == "macOS" ]]; then
         echo "Note for macOS:"
-        echo "The plugin is unsigned. On first load, you may need to:"
-        echo "  - Right-click the plugin and select 'Open'"
-        echo "  - Or run: xattr -cr ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3"
+        echo "  - Builds include ad-hoc code signing to bypass Gatekeeper"
+        echo "  - You may see a one-time prompt - click 'Open' to proceed"
+        echo "  - If blocked: right-click plugin -> 'Open' -> 'Open'"
         echo ""
     fi
     

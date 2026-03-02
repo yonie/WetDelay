@@ -71,6 +71,18 @@ jobs:
           chmod +x build.sh
           ./build.sh
 
+      - name: Verify macOS code signing
+        run: |
+          echo "Verifying code signature..."
+          if [ -d "WetDelay/build/Release/WetDelay.vst3" ]; then
+            codesign -v WetDelay/build/Release/WetDelay.vst3
+          elif [ -d "WetDelay/build/VST3/Release/WetDelay.vst3" ]; then
+            codesign -v WetDelay/build/VST3/Release/WetDelay.vst3
+          else
+            echo "ERROR: Plugin not found for signing verification"
+            exit 1
+          fi
+
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
@@ -83,7 +95,7 @@ jobs:
 
   merge-and-release:
     needs: [build-windows, build-linux, build-macos]
-    runs-on: ubuntu-22.04
+    runs-on: macos-14
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -121,6 +133,11 @@ jobs:
         run: |
           chmod +x scripts/merge-vst3.sh
           ./scripts/merge-vst3.sh
+
+      - name: Verify macOS binary signature in universal bundle
+        run: |
+          echo "Verifying macOS binary signature in universal bundle..."
+          codesign -v build/WetDelay.vst3/Contents/arm64-macos/WetDelay
 
       - name: Create ZIP archive
         run: |

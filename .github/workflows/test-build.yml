@@ -68,6 +68,18 @@ jobs:
           chmod +x build.sh
           ./build.sh
 
+      - name: Verify macOS code signing
+        run: |
+          echo "Verifying code signature..."
+          if [ -d "WetDelay/build/Release/WetDelay.vst3" ]; then
+            codesign -v WetDelay/build/Release/WetDelay.vst3
+          elif [ -d "WetDelay/build/VST3/Release/WetDelay.vst3" ]; then
+            codesign -v WetDelay/build/VST3/Release/WetDelay.vst3
+          else
+            echo "ERROR: Plugin not found for signing verification"
+            exit 1
+          fi
+
       - name: Validate macOS plugin
         run: |
           echo "Running VST3 validator (47 tests)..."
