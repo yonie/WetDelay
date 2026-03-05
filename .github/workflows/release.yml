@@ -178,8 +178,7 @@ jobs:
       - name: Create ZIP archive
         run: |
           cd build
-          cp ../INSTALL.md .
-          zip -r ../WetDelay-${{ github.ref_name }}.zip WetDelay.vst3 INSTALL.md
+          zip -r ../WetDelay-${{ github.ref_name }}.zip WetDelay.vst3
           ls -la ../WetDelay-${{ github.ref_name }}.zip
 
       - name: Create Release
