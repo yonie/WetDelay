@@ -94,7 +94,7 @@ jobs:
           retention-days: 1
 
   build-macos-x64:
-    runs-on: macos-13-large
+    runs-on: macos-14-large
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
