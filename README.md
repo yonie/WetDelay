@@ -454,9 +454,17 @@ Key validations:
 - Verify the folder contains `WetDelay.vst3`
 
 **"Apple could not verify..." or "Unidentified developer" warning:**
-- The install script automatically removes the quarantine attribute
-- If you downloaded the ZIP manually: `xattr -cr ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
-- Alternative: right-click the plugin → "Open" → "Open"
+- macOS adds quarantine attribute to downloaded files
+- After copying the .vst3 to your VST3 folder, run in Terminal:
+  ```bash
+  sudo xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+  ```
+- Or for system-wide installation:
+  ```bash
+  sudo xattr -rd com.apple.quarantine /Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+  ```
+- Restart your DAW after running the command
+- Alternative: right-click the plugin → "Open" → "Open" to bypass Gatekeeper
 
 ### Runtime Issues
 
