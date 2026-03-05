@@ -66,44 +66,50 @@ jobs:
       - name: Clone VST3 SDK
         run: git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
 
-      - name: Build universal binary (arm64 + x86_64)
+      - name: Build for arm64
         run: |
           chmod +x build.sh
-          
-          # Build for arm64 (Apple Silicon)
           mkdir -p build_arm64
           cd build_arm64
           cmake ../WetDelay -GXcode -DCMAKE_BUILD_TYPE=Release -DSMTG_CREATE_PLUGIN_LINK=0
-          xcodebuild -configuration Release -arch arm64 -jobs $(sysctl -n hw.ncpu)
+          xcodebuild -configuration Release -arch arm64 ONLY_ACTIVE_ARCH=NO -jobs $(sysctl -n hw.ncpu)
           cd ..
           
-          # Build for x86_64 (Intel)
+      - name: Build for x86_64
+        run: |
           mkdir -p build_x64
           cd build_x64
           cmake ../WetDelay -GXcode -DCMAKE_BUILD_TYPE=Release -DSMTG_CREATE_PLUGIN_LINK=0
-          xcodebuild -configuration Release -arch x86_64 -jobs $(sysctl -n hw.ncpu)
+          xcodebuild -configuration Release -arch x86_64 ONLY_ACTIVE_ARCH=NO -jobs $(sysctl -n hw.ncpu)
           cd ..
+
+      - name: Create universal binary
+        run: |
+          echo "Finding arm64 binary..."
+          ARM64_PATH=$(find build_arm64 -name "WetDelay" -path "*/MacOS/*" -type f | head -1)
+          echo "Finding x86_64 binary..."
+          X64_PATH=$(find build_x64 -name "WetDelay" -path "*/MacOS/*" -type f | head -1)
           
-          # Create universal binary structure
+          echo "ARM64 binary: $ARM64_PATH"
+          echo "x86_64 binary: $X64_PATH"
+          
+          if [ -z "$ARM64_PATH" ] || [ -z "$X64_PATH" ]; then
+            echo "ERROR: Could not find binaries"
+            exit 1
+          fi
+          
+          # Create output directory
           mkdir -p WetDelay/build/Release/WetDelay.vst3/Contents/MacOS
           mkdir -p WetDelay/build/Release/WetDelay.vst3/Contents/Resources
           
-          # Use lipo to create universal binary
-          lipo -create \
-            build_arm64/Release/WetDelay.vst3/Contents/MacOS/WetDelay \
-            build_x64/Release/WetDelay.vst3/Contents/MacOS/WetDelay \
-            -output WetDelay/build/Release/WetDelay.vst3/Contents/MacOS/WetDelay
+          # Create universal binary
+          lipo -create "$ARM64_PATH" "$X64_PATH" -output WetDelay/build/Release/WetDelay.vst3/Contents/MacOS/WetDelay
           
-          # Copy resources
-          cp -r build_arm64/Release/WetDelay.vst3/Contents/Resources/* \
-            WetDelay/build/Release/WetDelay.vst3/Contents/Resources/
-          
-          # Copy Info.plist and PkgInfo
-          cp build_arm64/Release/WetDelay.vst3/Contents/Info.plist \
-            WetDelay/build/Release/WetDelay.vst3/Contents/
-          [ -f build_arm64/Release/WetDelay.vst3/Contents/PkgInfo ] && \
-            cp build_arm64/Release/WetDelay.vst3/Contents/PkgInfo \
-            WetDelay/build/Release/WetDelay.vst3/Contents/
+          # Copy resources and plist from arm64 build
+          VST3_PATH=$(dirname "$ARM64_PATH" | xargs dirname | xargs dirname)
+          cp -r "$VST3_PATH/Contents/Resources/"* WetDelay/build/Release/WetDelay.vst3/Contents/Resources/ || true
+          cp "$VST3_PATH/Contents/Info.plist" WetDelay/build/Release/WetDelay.vst3/Contents/ || true
+          cp "$VST3_PATH/Contents/PkgInfo" WetDelay/build/Release/WetDelay.vst3/Contents/ || true
 
       - name: Verify macOS code signing
         run: |
