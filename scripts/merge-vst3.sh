@@ -15,6 +15,7 @@ mkdir -p build/WetDelay.vst3/Contents/Resources
 mkdir -p build/WetDelay.vst3/Contents/x86_64-win
 mkdir -p build/WetDelay.vst3/Contents/x86_64-linux
 mkdir -p build/WetDelay.vst3/Contents/arm64-macos
+mkdir -p build/WetDelay.vst3/Contents/x86_64-macos
 
 # Copy resources from Linux build (could be any platform - they're identical)
 echo "Copying shared resources..."
@@ -73,38 +74,58 @@ if [ "$LINUX_FOUND" = false ]; then
 fi
 
 # Copy macOS binary (may be in different location for Xcode builds)
-echo "Copying macOS binary..."
+echo "Copying macOS arm64 binary..."
 MACOS_FOUND=false
-if [ -f "artifacts/macos/Contents/arm64-macos/WetDelay" ]; then
-    cp artifacts/macos/Contents/arm64-macos/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
-    echo "  Found at artifacts/macos/Contents/arm64-macos/WetDelay"
+if [ -f "artifacts/macos-arm64/Contents/arm64-macos/WetDelay" ]; then
+    cp artifacts/macos-arm64/Contents/arm64-macos/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
+    echo "  Found at artifacts/macos-arm64/Contents/arm64-macos/WetDelay"
     MACOS_FOUND=true
-elif [ -f "artifacts/macos/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay" ]; then
-    cp artifacts/macos/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
-    echo "  Found at artifacts/macos/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay"
+elif [ -f "artifacts/macos-arm64/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay" ]; then
+    cp artifacts/macos-arm64/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
+    echo "  Found at artifacts/macos-arm64/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay"
     MACOS_FOUND=true
-elif [ -f "artifacts/macos/Contents/MacOS/WetDelay" ]; then
-    cp artifacts/macos/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
-    echo "  Found at artifacts/macos/Contents/MacOS/WetDelay"
+elif [ -f "artifacts/macos-arm64/Contents/MacOS/WetDelay" ]; then
+    cp artifacts/macos-arm64/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/arm64-macos/
+    echo "  Found at artifacts/macos-arm64/Contents/MacOS/WetDelay"
     MACOS_FOUND=true
 fi
 if [ "$MACOS_FOUND" = false ]; then
-    echo "WARNING: macOS binary not found!"
-    find artifacts/macos -type f -name "WetDelay" 2>/dev/null | head -5 || echo "No WetDelay executable found"
+    echo "WARNING: macOS arm64 binary not found!"
+    find artifacts/macos-arm64 -type f -name "WetDelay" 2>/dev/null | head -5 || echo "No WetDelay executable found"
+fi
+
+echo "Copying macOS x86_64 binary..."
+MACOS_X64_FOUND=false
+if [ -f "artifacts/macos-x64/Contents/x86_64-macos/WetDelay" ]; then
+    cp artifacts/macos-x64/Contents/x86_64-macos/WetDelay build/WetDelay.vst3/Contents/x86_64-macos/
+    echo "  Found at artifacts/macos-x64/Contents/x86_64-macos/WetDelay"
+    MACOS_X64_FOUND=true
+elif [ -f "artifacts/macos-x64/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay" ]; then
+    cp artifacts/macos-x64/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/x86_64-macos/
+    echo "  Found at artifacts/macos-x64/VST3/Release/WetDelay.vst3/Contents/MacOS/WetDelay"
+    MACOS_X64_FOUND=true
+elif [ -f "artifacts/macos-x64/Contents/MacOS/WetDelay" ]; then
+    cp artifacts/macos-x64/Contents/MacOS/WetDelay build/WetDelay.vst3/Contents/x86_64-macos/
+    echo "  Found at artifacts/macos-x64/Contents/MacOS/WetDelay"
+    MACOS_X64_FOUND=true
+fi
+if [ "$MACOS_X64_FOUND" = false ]; then
+    echo "WARNING: macOS x86_64 binary not found!"
+    find artifacts/macos-x64 -type f -name "WetDelay" 2>/dev/null | head -5 || echo "No WetDelay executable found"
 fi
 
 # Copy macOS bundle metadata (Info.plist, PkgInfo) for codesign compatibility
 echo "Copying macOS bundle metadata..."
 MACOS_PLIST_FOUND=false
-if [ -f "artifacts/macos/VST3/Release/WetDelay.vst3/Contents/Info.plist" ]; then
-    cp artifacts/macos/VST3/Release/WetDelay.vst3/Contents/Info.plist build/WetDelay.vst3/Contents/
-    [ -f "artifacts/macos/VST3/Release/WetDelay.vst3/Contents/PkgInfo" ] && cp artifacts/macos/VST3/Release/WetDelay.vst3/Contents/PkgInfo build/WetDelay.vst3/Contents/
-    echo "  Found at artifacts/macos/VST3/Release/WetDelay.vst3/Contents/"
+if [ -f "artifacts/macos-arm64/VST3/Release/WetDelay.vst3/Contents/Info.plist" ]; then
+    cp artifacts/macos-arm64/VST3/Release/WetDelay.vst3/Contents/Info.plist build/WetDelay.vst3/Contents/
+    [ -f "artifacts/macos-arm64/VST3/Release/WetDelay.vst3/Contents/PkgInfo" ] && cp artifacts/macos-arm64/VST3/Release/WetDelay.vst3/Contents/PkgInfo build/WetDelay.vst3/Contents/
+    echo "  Found at artifacts/macos-arm64/VST3/Release/WetDelay.vst3/Contents/"
     MACOS_PLIST_FOUND=true
-elif [ -f "artifacts/macos/Contents/Info.plist" ]; then
-    cp artifacts/macos/Contents/Info.plist build/WetDelay.vst3/Contents/
-    [ -f "artifacts/macos/Contents/PkgInfo" ] && cp artifacts/macos/Contents/PkgInfo build/WetDelay.vst3/Contents/
-    echo "  Found at artifacts/macos/Contents/"
+elif [ -f "artifacts/macos-arm64/Contents/Info.plist" ]; then
+    cp artifacts/macos-arm64/Contents/Info.plist build/WetDelay.vst3/Contents/
+    [ -f "artifacts/macos-arm64/Contents/PkgInfo" ] && cp artifacts/macos-arm64/Contents/PkgInfo build/WetDelay.vst3/Contents/
+    echo "  Found at artifacts/macos-arm64/Contents/"
     MACOS_PLIST_FOUND=true
 fi
 if [ "$MACOS_PLIST_FOUND" = false ]; then

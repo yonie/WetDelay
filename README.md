@@ -519,7 +519,7 @@ See the VST3 SDK license files for details on SDK licensing.
 
 ### v1.1.0 (2026-03-01)
 - **Multi-Platform Support**:
-  - Universal VST3 bundle for Windows, Linux (x86_64), and macOS (arm64)
+  - Universal VST3 bundle for Windows (x64), Linux (x86_64), and macOS (Intel x86_64 + Apple Silicon arm64)
   - GitHub Actions CI/CD for automated cross-platform builds
   - Single download contains all platform binaries
 
