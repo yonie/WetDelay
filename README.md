@@ -454,10 +454,9 @@ Key validations:
 - Verify the folder contains `WetDelay.vst3`
 
 **"Apple could not verify..." or "Unidentified developer" warning:**
-- Builds from v1.1.0-test5 onwards include ad-hoc code signing
-- You'll see a one-time prompt - click "Open" to proceed
-- For older builds or if blocked: right-click the plugin → "Open" → "Open"
-- Or remove quarantine: `xattr -cr ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
+- The install script automatically removes the quarantine attribute
+- If you downloaded the ZIP manually: `xattr -cr ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
+- Alternative: right-click the plugin → "Open" → "Open"
 
 ### Runtime Issues
 

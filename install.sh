@@ -46,33 +46,38 @@ fi
 echo "Installing WetDelay.vst3 to $PLUGIN_DEST..."
 cp -r "$PLUGIN_SOURCE" "$PLUGIN_DEST/"
 
-if [ $? -eq 0 ]; then
-    echo ""
-    echo "================================================"
-    echo " Installation successful!"
-    echo "================================================"
-    echo ""
-    echo "Plugin installed to: $PLUGIN_DEST/WetDelay.vst3"
-    echo ""
-    
-    if [[ "$PLATFORM" == "macOS" ]]; then
-        echo "Note for macOS:"
-        echo "  - Builds include ad-hoc code signing to bypass Gatekeeper"
-        echo "  - You may see a one-time prompt - click 'Open' to proceed"
-        echo "  - If blocked: right-click plugin -> 'Open' -> 'Open'"
-        echo ""
-    fi
-    
-    echo "Next steps:"
-    echo "1. Restart your DAW if it's running"
-    echo "2. Scan for new plugins (most DAWs do this automatically)"
-    echo "3. Look for WetDelay in your plugin list"
-    echo ""
-else
+if [ $? -ne 0 ]; then
     echo ""
     echo "ERROR: Installation failed"
     echo ""
     exit 1
 fi
+
+# Remove quarantine on macOS to prevent Gatekeeper blocking
+if [[ "$PLATFORM" == "macOS" ]]; then
+    echo "Removing quarantine attribute..."
+    xattr -cr "$PLUGIN_DEST/WetDelay.vst3" 2>/dev/null || true
+fi
+
+echo ""
+echo "================================================"
+echo " Installation successful!"
+echo "================================================"
+echo ""
+echo "Plugin installed to: $PLUGIN_DEST/WetDelay.vst3"
+echo ""
+
+if [[ "$PLATFORM" == "macOS" ]]; then
+    echo "Note for macOS:"
+    echo "  - Quarantine attribute has been removed"
+    echo "  - If still blocked: right-click plugin -> 'Open' -> 'Open'"
+    echo ""
+fi
+
+echo "Next steps:"
+echo "1. Restart your DAW if it's running"
+echo "2. Scan for new plugins (most DAWs do this automatically)"
+echo "3. Look for WetDelay in your plugin list"
+echo ""
 
 cd "$SCRIPT_DIR"
