@@ -122,6 +122,102 @@ chmod +x install.sh
 
 5. **Load in your DAW** and start using!
 
+## Installation
+
+### Windows
+
+1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/wetdelay/releases)
+2. **Extract** the ZIP file
+3. **Copy** `WetDelay.vst3` to your VST3 folder:
+   - User: `C:\Users\[Username]\Documents\VST3\`
+   - System: `C:\Program Files\Common Files\VST3\`
+4. **Restart your DAW** and rescan plugins
+
+### Linux
+
+1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/wetdelay/releases)
+2. **Extract** the ZIP file
+3. **Copy** `WetDelay.vst3` to your VST3 folder:
+   - User: `~/.vst3/`
+   - System: `/usr/lib/vst3/`
+4. **Restart your DAW** and rescan plugins
+
+### macOS
+
+1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/wetdelay/releases)
+2. **Extract** the ZIP file
+3. **Copy** `WetDelay.vst3` to your VST3 folder:
+   - User: `~/Library/Audio/Plug-Ins/VST3/` (recommended)
+   - System: `/Library/Audio/Plug-Ins/VST3/` (requires admin)
+4. **Remove quarantine attribute** (see Troubleshooting below)
+5. **Restart your DAW** and rescan plugins
+
+#### ❗️ Why macOS Blocks This Plugin
+
+When you try to load the plugin in your DAW, you may see an error:
+
+> "WetDelay.vst3" cannot be opened because the developer cannot be verified.
+
+This **does not mean** the plugin contains malware or is unsafe.
+
+This is due to **Apple's security policy**, which requires developers to:
+- Enroll in the Apple Developer Program
+- Pay **$99/year** for a developer certificate
+- Notarize each build with Apple
+
+As an independent developer releasing **free, open-source software** under the MIT license, I currently don't have the budget for Apple's developer program. The complete source code is available on GitHub for anyone to inspect and build themselves.
+
+This is a common issue with free audio plugins on macOS. You'll encounter the same message with many free, open-source VSTs.
+
+#### 🛡️ How to Allow the Plugin
+
+macOS adds a security attribute (`com.apple.quarantine`) to files downloaded from the internet. Remove it with Terminal:
+
+**For user installation:**
+```bash
+sudo xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+```
+
+**For system-wide installation:**
+```bash
+sudo xattr -rd com.apple.quarantine /Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+```
+
+**What this command does:**
+- `sudo` = run with administrator privileges
+- `xattr` = extended attribute tool
+- `-r` = recursive (process all files in the bundle)
+- `-d` = delete the specified attribute
+- `com.apple.quarantine` = the quarantine attribute
+- Restarts your DAW after running the command
+
+#### 📝 Optional: Ad-Hoc Code Signing (Recommended)
+
+Some DAWs require plugins to be signed, even locally. You can sign the plugin yourself:
+
+**For user installation:**
+```bash
+codesign --force --deep --sign - ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+```
+
+**For system-wide installation:**
+```bash
+sudo codesign --force --deep --sign - /Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+```
+
+This creates a local signature on your machine that satisfies macOS requirements.
+
+#### ❤️ Support Independent Developers
+
+If you appreciate this plugin and the transparency about macOS's developer fees, consider:
+- **Starring the repo** on GitHub
+- **Reporting issues** you encounter
+- **Supporting development** at [buymeacoffee.com/yonie](https://buymeacoffee.com/yonie)
+
+Your support helps fund tools like Apple Developer Program enrollment for better macOS support in the future.
+
+---
+
 ## Detailed Build Instructions
 
 ### Step 1: Prerequisites
@@ -384,87 +480,23 @@ Key validations:
 
 ## Troubleshooting
 
-### Build Errors
-
-#### Windows
-**CMake configuration failed:**
-- Ensure Visual Studio 2022 is installed
-- Verify CMake is in your PATH
-- Check that vst3sdk exists in the correct location
-
-**MSBuild error:**
-- Make sure Visual Studio 2022 Build Tools are installed
-- Try running from "Developer Command Prompt for VS 2022"
-
-#### Linux
-**CMake configuration failed:**
-- Ensure all dependencies are installed
-- Verify CMake version is 3.15 or higher: `cmake --version`
-- Check that vst3sdk exists in the correct location
-
-**Build error - missing headers:**
-- Install the required development packages listed in Prerequisites
-- On Debian/Ubuntu, ensure you have `libxcb-util-dev` (not `libxcb-util0-dev`)
-
-**GCC version error:**
-- Ensure you have GCC 8 or higher for C++17 support
-- Check with: `gcc --version`
-
-#### macOS
-**CMake configuration failed:**
-- Ensure Xcode Command Line Tools are installed: `xcode-select --install`
-- Verify CMake is installed: `cmake --version`
-- Check that vst3sdk exists in the correct location
-
-**Clang version error:**
-- Ensure you have Xcode 10 or higher for C++17 support
-- Check with: `clang --version`
-
-### Installation Issues
-
-#### Windows
-**Symlink error (exit code 1):**
-- This is normal - the plugin is still built successfully
-- Run `install.bat` to copy the plugin manually
-- Or run the script as Administrator for symlink support
+### macOS Issues
 
 **Plugin not appearing in DAW:**
-- Restart your DAW after installation
-- Check VST3 scan path: `%COMMONPROGRAMFILES%\VST3\`
-- Verify the folder contains `WetDelay.vst3`
-
-#### Linux
-**Permission denied:**
-- Make sure the scripts are executable: `chmod +x build.sh install.sh`
-- For system-wide install, use sudo: `sudo ./install.sh` (modifies script)
-
-**Plugin not appearing in DAW:**
-- Restart your DAW after installation
-- Check VST3 scan path: `~/.vst3/` or `/usr/lib/vst3/`
-- Verify the folder contains `WetDelay.vst3`
-- Some DAWs need manual path configuration in settings
-
-#### macOS
-**Permission denied:**
-- Make sure the scripts are executable: `chmod +x build.sh install.sh`
-
-**Plugin not appearing in DAW:**
-- Restart your DAW after installation
+- You forgot to remove the quarantine attribute - see Installation section above
+- Restart your DAW after running the `xattr` command
 - Check VST3 scan path: `~/Library/Audio/Plug-Ins/VST3/`
 - Verify the folder contains `WetDelay.vst3`
 
-**"Apple could not verify..." or "Unidentified developer" warning:**
-- macOS adds quarantine attribute to downloaded files
-- After copying the .vst3 to your VST3 folder, run in Terminal:
-  ```bash
-  sudo xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
-  ```
-- Or for system-wide installation:
-  ```bash
-  sudo xattr -rd com.apple.quarantine /Library/Audio/Plug-Ins/VST3/WetDelay.vst3
-  ```
-- Restart your DAW after running the command
+**Still getting "cannot be verified" after running xattr:**
+- Try the ad-hoc code signing method (see Installation section above)
+- Some DAWs require both quarantine removal AND signing
 - Alternative: right-click the plugin → "Open" → "Open" to bypass Gatekeeper
+
+**Plugin crashes DAW:**
+- macOS 10.13+ (Intel) or macOS 11.0+ (Apple Silicon) required
+- Check DAW console for error messages
+- Report issue at [GitHub Issues](https://github.com/yonie/wetdelay/issues)
 
 ### Runtime Issues
 
