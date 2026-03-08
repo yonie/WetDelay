@@ -90,6 +90,8 @@ public:
     
 protected:
     WetDelayProcessorController* mainController = nullptr;
+    VSTGUI::CSegmentButton* delayButton = nullptr;
+    bool segmentNamesCleared = false;
 };
 
 //------------------------------------------------------------------------

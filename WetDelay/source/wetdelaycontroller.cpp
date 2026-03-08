@@ -196,15 +196,10 @@ VSTGUI::CView* DelayButtonController::verifyView(VSTGUI::CView* view,
     {
         if (segmentButton->getTag() == kDelayTimeParam)
         {
-            // Remove all segments and re-add them with empty names
-            // This hides the text labels that are populated from StringListParameter
-            segmentButton->removeAllSegments();
-            for (int i = 0; i < 6; i++)
-            {
-                VSTGUI::CSegmentButton::Segment segment;
-                segment.name = "";
-                segmentButton->addSegment(segment);
-            }
+            // Store reference - VST3Editor populates segment names AFTER verifyView
+            // We clear them in valueChanged which is called after parameter binding
+            delayButton = segmentButton;
+            segmentNamesCleared = false;
         }
     }
     return DelegationController::verifyView(view, attributes, description);
@@ -213,6 +208,19 @@ VSTGUI::CView* DelayButtonController::verifyView(VSTGUI::CView* view,
 //------------------------------------------------------------------------
 void DelayButtonController::valueChanged(VSTGUI::CControl* control)
 {
+    // Clear segment names after VST3Editor populates them from StringListParameter
+    // This is called after parameter binding completes
+    if (delayButton && !segmentNamesCleared)
+    {
+        const auto& segments = delayButton->getSegments();
+        for (size_t i = 0; i < segments.size(); i++)
+        {
+            const_cast<VSTGUI::CSegmentButton::Segment&>(segments[i]).name = "";
+        }
+        segmentNamesCleared = true;
+        delayButton = nullptr;
+    }
+    
     // Forward to parent controller
     DelegationController::valueChanged(control);
 }
