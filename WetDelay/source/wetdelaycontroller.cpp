@@ -7,6 +7,7 @@
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "base/source/fstreamer.h"
 #include "customviewcreator.h"
+#include "vstgui/lib/controls/csegmentbutton.h"
 
 using namespace Steinberg;
 
@@ -190,6 +191,22 @@ VSTGUI::CView* DelayButtonController::verifyView(VSTGUI::CView* view,
                                                   const VSTGUI::UIAttributes& attributes,
                                                   const VSTGUI::IUIDescription* description)
 {
+    auto* segmentButton = dynamic_cast<VSTGUI::CSegmentButton*>(view);
+    if (segmentButton)
+    {
+        if (segmentButton->getTag() == kDelayTimeParam)
+        {
+            // Remove all segments and re-add them with empty names
+            // This hides the text labels that are populated from StringListParameter
+            segmentButton->removeAllSegments();
+            for (int i = 0; i < 6; i++)
+            {
+                VSTGUI::CSegmentButton::Segment segment;
+                segment.name = "";
+                segmentButton->addSegment(segment);
+            }
+        }
+    }
     return DelegationController::verifyView(view, attributes, description);
 }
 
