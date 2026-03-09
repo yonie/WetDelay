@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14.0)
 option(SMTG_ENABLE_VST3_PLUGIN_EXAMPLES "Enable VST 3 Plug-in Examples" OFF)
 option(SMTG_ENABLE_VST3_HOSTING_EXAMPLES "Enable VST 3 Hosting Examples" OFF)
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12 CACHE STRING "")
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "")
 
 set(vst3sdk_SOURCE_DIR "../vst3sdk")
 if(NOT vst3sdk_SOURCE_DIR)
@@ -14,7 +14,7 @@ project(WetDelay
     # This is your plug-in version number. Change it here only.
     # Version number symbols usable in C++ can be found in
     # source/version.h and ${PROJECT_BINARY_DIR}/projectversion.h.
-    VERSION 1.0.0.0 
+    VERSION 1.1.0.0 
     DESCRIPTION "WetDelay VST 3 Plug-in"
 )
 
@@ -39,6 +39,8 @@ smtg_add_vst3plugin(WetDelay
     source/buttonledindicator.cpp
     source/buttonselectionframe.h
     source/buttonselectionframe.cpp
+    source/delaytimebuttonsgroup.h
+    source/delaytimebuttonsgroup.cpp
     source/customviewcreator.h
     source/customviewcreator.cpp
 )
@@ -56,7 +58,7 @@ if(SMTG_ENABLE_VSTGUI_SUPPORT)
     smtg_target_add_plugin_resources(WetDelay
         RESOURCES
             "resource/wetdelayeditor.uidesc"
-            "../backplate.jpg"
+            "../backplate.png"
     )
 endif(SMTG_ENABLE_VSTGUI_SUPPORT)
 # -------------------
@@ -95,4 +97,8 @@ elseif(SMTG_WIN)
             "--pluginfolder \"$(OutDir)/\""
         )
     endif()
+elseif(SMTG_LINUX)
+    # Linux uses default settings
+    # Plugin will be built to: build/VST3/WetDelay.vst3/Contents/x86_64-linux/WetDelay.so
+    # Install location: ~/.vst3/ or /usr/lib/vst3/
 endif(SMTG_MAC)

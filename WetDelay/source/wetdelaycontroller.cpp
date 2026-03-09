@@ -190,6 +190,7 @@ VSTGUI::CView* DelayButtonController::verifyView(VSTGUI::CView* view,
                                                   const VSTGUI::UIAttributes& attributes,
                                                   const VSTGUI::IUIDescription* description)
 {
+    // No special handling needed for DelayTimeButtonGroup
     return DelegationController::verifyView(view, attributes, description);
 }
 
@@ -203,7 +204,7 @@ void DelayButtonController::valueChanged(VSTGUI::CControl* control)
 //------------------------------------------------------------------------
 void DelayButtonController::updateLEDIndicators(int selectedIndex)
 {
-    // Not needed with CSegmentButton - it handles visual state automatically
+    // Not needed with DelayTimeButtonGroup - ButtonSelectionFrame handles LEDs
 }
 
 //------------------------------------------------------------------------

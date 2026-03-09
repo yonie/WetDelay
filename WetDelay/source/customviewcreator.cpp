@@ -3,6 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "customviewcreator.h"
+#include "delaytimebuttonsgroup.h"
 #include "vstgui/uidescription/uiviewcreator.h"
 
 using namespace VSTGUI;
@@ -251,8 +252,8 @@ IViewCreator::AttrType ButtonSelectionFrameCreator::getAttributeType(const std::
 
 //------------------------------------------------------------------------
 bool ButtonSelectionFrameCreator::getAttributeValue(CView* view, const std::string& attributeName,
-                                                     std::string& stringValue,
-                                                     const IUIDescription* desc) const
+                                                      std::string& stringValue,
+                                                      const IUIDescription* desc) const
 {
     auto* frame = dynamic_cast<ButtonSelectionFrame*>(view);
     if (!frame)
@@ -267,11 +268,80 @@ bool ButtonSelectionFrameCreator::getAttributeValue(CView* view, const std::stri
 }
 
 //------------------------------------------------------------------------
+// DelayTimeButtonGroupCreator Implementation
+//------------------------------------------------------------------------
+DelayTimeButtonGroupCreator::DelayTimeButtonGroupCreator()
+{
+    UIViewFactory::registerViewCreator(*this);
+}
+
+//------------------------------------------------------------------------
+CView* DelayTimeButtonGroupCreator::create(const UIAttributes& attributes,
+                                            const IUIDescription* description) const
+{
+    CRect size(0, 0, 630, 119);
+    return new DelayTimeButtonGroup(size);
+}
+
+//------------------------------------------------------------------------
+bool DelayTimeButtonGroupCreator::apply(CView* view, const UIAttributes& attributes,
+                                          const IUIDescription* description) const
+{
+    auto* control = dynamic_cast<DelayTimeButtonGroup*>(view);
+    if (!control)
+        return false;
+    
+    // Get control-tag from attributes
+    const std::string* tagAttr = attributes.getAttributeValue("control-tag");
+    if (tagAttr)
+    {
+        // Look up tag ID from UIDescription
+        int32_t tag = -1;
+        if (description)
+            tag = description->getTagForName(tagAttr->c_str());
+        
+        if (tag != -1)
+        {
+            control->setTag(tag);
+            
+            // Set listener from UIDescription - this is CRITICAL for valueChanged() to work
+            IControlListener* listener = description->getControlListener(tagAttr->c_str());
+            if (listener)
+                control->setListener(listener);
+        }
+    }
+    
+    return true;
+}
+
+//------------------------------------------------------------------------
+bool DelayTimeButtonGroupCreator::getAttributeNames(StringList& attributeNames) const
+{
+    // No attributes
+    return true;
+}
+
+//------------------------------------------------------------------------
+IViewCreator::AttrType DelayTimeButtonGroupCreator::getAttributeType(const std::string& attributeName) const
+{
+    return kUnknownType;
+}
+
+//------------------------------------------------------------------------
+bool DelayTimeButtonGroupCreator::getAttributeValue(CView* view, const std::string& attributeName,
+                                                     std::string& stringValue,
+                                                     const IUIDescription* desc) const
+{
+    return false;
+}
+
+//------------------------------------------------------------------------
 // Static instances to auto-register
 //------------------------------------------------------------------------
 static LEDMeterViewCreator gLEDMeterViewCreator;
 static ButtonLEDIndicatorCreator gButtonLEDIndicatorCreator;
 static ButtonSelectionFrameCreator gButtonSelectionFrameCreator;
+static DelayTimeButtonGroupCreator gDelayTimeButtonGroupCreator;
 
 //------------------------------------------------------------------------
 void registerCustomViews()

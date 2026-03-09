@@ -1,0 +1,191 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Clone VST3 SDK
+        run: git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
+
+      - name: Build
+        run: ./build.bat
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: WetDelay/build/VST3/Release/WetDelay.vst3/
+          retention-days: 1
+
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Clone VST3 SDK
+        run: git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
+            libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
+            libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
+            libxcb-keysyms1-dev
+
+      - name: Build
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: WetDelay/build/VST3/Release/WetDelay.vst3/
+          retention-days: 1
+
+  build-macos:
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Clone VST3 SDK
+        run: git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
+
+      - name: Build for arm64
+        run: |
+          chmod +x build.sh
+          mkdir -p build_arm64
+          cd build_arm64
+          cmake ../WetDelay -GXcode -DCMAKE_BUILD_TYPE=Release -DSMTG_CREATE_PLUGIN_LINK=0
+          xcodebuild -configuration Release -arch arm64 ONLY_ACTIVE_ARCH=NO -jobs $(sysctl -n hw.ncpu)
+          cd ..
+          
+      - name: Build for x86_64
+        run: |
+          mkdir -p build_x64
+          cd build_x64
+          cmake ../WetDelay -GXcode -DCMAKE_BUILD_TYPE=Release -DSMTG_CREATE_PLUGIN_LINK=0
+          xcodebuild -configuration Release -arch x86_64 ONLY_ACTIVE_ARCH=NO -jobs $(sysctl -n hw.ncpu)
+          cd ..
+
+      - name: Create universal binary
+        run: |
+          echo "Finding arm64 binary..."
+          ARM64_PATH=$(find build_arm64 -name "WetDelay" -path "*/MacOS/*" -type f | head -1)
+          echo "Finding x86_64 binary..."
+          X64_PATH=$(find build_x64 -name "WetDelay" -path "*/MacOS/*" -type f | head -1)
+          
+          echo "ARM64 binary: $ARM64_PATH"
+          echo "x86_64 binary: $X64_PATH"
+          
+          if [ -z "$ARM64_PATH" ] || [ -z "$X64_PATH" ]; then
+            echo "ERROR: Could not find binaries"
+            exit 1
+          fi
+          
+          # Create output directory
+          mkdir -p WetDelay/build/Release/WetDelay.vst3/Contents/MacOS
+          mkdir -p WetDelay/build/Release/WetDelay.vst3/Contents/Resources
+          
+          # Create universal binary
+          lipo -create "$ARM64_PATH" "$X64_PATH" -output WetDelay/build/Release/WetDelay.vst3/Contents/MacOS/WetDelay
+          
+          # Copy resources and plist from arm64 build
+          VST3_PATH=$(dirname "$ARM64_PATH" | xargs dirname | xargs dirname)
+          cp -r "$VST3_PATH/Contents/Resources/"* WetDelay/build/Release/WetDelay.vst3/Contents/Resources/ || true
+          cp "$VST3_PATH/Contents/Info.plist" WetDelay/build/Release/WetDelay.vst3/Contents/ || true
+          cp "$VST3_PATH/Contents/PkgInfo" WetDelay/build/Release/WetDelay.vst3/Contents/ || true
+
+      - name: Verify macOS code signing
+        run: |
+          echo "Verifying code signature..."
+          codesign --force --deep --sign - WetDelay/build/Release/WetDelay.vst3
+          codesign -v WetDelay/build/Release/WetDelay.vst3
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: WetDelay/build/Release/WetDelay.vst3/
+          retention-days: 1
+
+  merge-and-release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+          path: artifacts/windows
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-build
+          path: artifacts/linux
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-build
+          path: artifacts/macos
+
+      - name: Debug artifact structure
+        run: |
+          echo "Windows artifact structure:"
+          find artifacts/windows -type f | head -20
+          echo ""
+          echo "Linux artifact structure:"
+          find artifacts/linux -type f | head -20
+          echo ""
+          echo "macOS universal binary artifact structure:"
+          find artifacts/macos -type f | head -20
+
+      - name: Merge into universal VST3
+        run: |
+          chmod +x scripts/merge-vst3.sh
+          ./scripts/merge-vst3.sh
+
+      - name: Code sign universal VST3 bundle
+        run: |
+          echo "Re-signing universal VST3 bundle for macOS..."
+          codesign --force --deep --sign - build/WetDelay.vst3
+
+      - name: Verify universal bundle signature
+        run: |
+          echo "Verifying universal bundle signature..."
+          codesign -v build/WetDelay.vst3
+
+      - name: Create ZIP archive
+        run: |
+          cd build
+          zip -r ../WetDelay-${{ github.ref_name }}.zip WetDelay.vst3
+          ls -la ../WetDelay-${{ github.ref_name }}.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: WetDelay-${{ github.ref_name }}.zip
+          generate_release_notes: true
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
