@@ -147,10 +147,13 @@ chmod +x install.sh
 1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/wetdelay/releases)
 2. **Extract** the ZIP file
 3. **Copy** `WetDelay.vst3` to your VST3 folder:
-   - User: `~/Library/Audio/Plug-Ins/VST3/` (recommended)
-   - System: `/Library/Audio/Plug-Ins/VST3/` (requires admin)
-4. **Remove quarantine attribute** (see Troubleshooting below)
+   ```
+   ~/Library/Audio/Plug-Ins/VST3/
+   ```
+4. **Remove quarantine attribute** (see below)
 5. **Restart your DAW** and rescan plugins
+
+Note that by default, the Library folder may not be shown in the Finder. See the macOS documentation on how to make it visible.
 
 #### ❗️ Why macOS Blocks This Plugin
 
@@ -173,39 +176,17 @@ This is a common issue with free audio plugins on macOS. You'll encounter the sa
 
 macOS adds a security attribute (`com.apple.quarantine`) to files downloaded from the internet. Remove it with Terminal:
 
-**For user installation:**
 ```bash
-sudo xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
-```
-
-**For system-wide installation:**
-```bash
-sudo xattr -rd com.apple.quarantine /Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
 ```
 
 **What this command does:**
-- `sudo` = run with administrator privileges
 - `xattr` = extended attribute tool
 - `-r` = recursive (process all files in the bundle)
 - `-d` = delete the specified attribute
 - `com.apple.quarantine` = the quarantine attribute
-- Restarts your DAW after running the command
 
-#### 📝 Optional: Ad-Hoc Code Signing (Recommended)
-
-Some DAWs require plugins to be signed, even locally. You can sign the plugin yourself:
-
-**For user installation:**
-```bash
-codesign --force --deep --sign - ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
-```
-
-**For system-wide installation:**
-```bash
-sudo codesign --force --deep --sign - /Library/Audio/Plug-Ins/VST3/WetDelay.vst3
-```
-
-This creates a local signature on your machine that satisfies macOS requirements.
+Restart your DAW after running the command.
 
 #### ❤️ Support Independent Developers
 
