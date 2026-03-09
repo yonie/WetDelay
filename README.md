@@ -26,107 +26,11 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 - **Vintage Filtering**: 80 Hz high-pass and 9 kHz low-pass (6 dB/oct) for warm character
 - **Channel Crosstalk**: Authentic -40 dB (1%) L/R channel bleed simulating analog circuitry
 
-## System Requirements
-
-### Windows
-- **Operating System**: Windows 10/11 (64-bit)
-- **Build Tools**: 
-  - Visual Studio 2022 Build Tools or Community Edition
-  - CMake 3.15 or higher
-  - Git
-
-### Linux
-- **Operating System**: Linux (x86_64)
-- **Build Tools**:
-  - GCC or Clang with C++17 support
-  - CMake 3.15 or higher
-  - Git
-- **Dependencies** (Ubuntu/Debian):
-  ```
-  sudo apt-get install cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
-      libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
-      libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
-      libxcb-keysyms1-dev git
-  ```
-
-### macOS
-- **Operating System**: macOS 10.13 or higher (Intel) / macOS 11.0 or higher (Apple Silicon)
-- **Build Tools**:
-  - Xcode Command Line Tools or Xcode
-  - CMake 3.15 or higher
-  - Git
-
-## Quick Start
-
-### Building the Plugin
-
-#### Windows
-1. **Clone and build in one step:**
-```batch
-build.bat
-```
-
-2. **Install to VST3 folder:**
-```batch
-install.bat
-```
-
-#### Linux
-1. **Install dependencies:**
-```bash
-sudo apt-get install cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
-    libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
-    libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
-    libxcb-keysyms1-dev git
-```
-
-2. **Clone VST3 SDK:**
-```bash
-git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
-```
-
-3. **Build:**
-```bash
-chmod +x build.sh
-./build.sh
-```
-
-4. **Install to user VST3 folder:**
-```bash
-chmod +x install.sh
-./install.sh
-```
-
-#### macOS
-1. **Install Xcode Command Line Tools:**
-```bash
-xcode-select --install
-```
-
-2. **Clone VST3 SDK:**
-```bash
-git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
-```
-
-3. **Build:**
-```bash
-chmod +x build.sh
-./build.sh
-```
-
-4. **Install to user VST3 folder:**
-```bash
-chmod +x install.sh
-./install.sh
-```
-
-5. **Load in your DAW** and start using!
-
-## Installation
+## Download & Installation
 
 ### Windows
 
-1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/wetdelay/releases)
+1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/WetDelay/releases)
 2. **Extract** the ZIP file
 3. **Copy** `WetDelay.vst3` to your VST3 folder:
    - User: `C:\Users\[Username]\Documents\VST3\`
@@ -135,7 +39,7 @@ chmod +x install.sh
 
 ### Linux
 
-1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/wetdelay/releases)
+1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/WetDelay/releases)
 2. **Extract** the ZIP file
 3. **Copy** `WetDelay.vst3` to your VST3 folder:
    - User: `~/.vst3/`
@@ -144,7 +48,7 @@ chmod +x install.sh
 
 ### macOS
 
-1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/wetdelay/releases)
+1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/WetDelay/releases)
 2. **Extract** the ZIP file
 3. **Copy** `WetDelay.vst3` to your VST3 folder:
    ```
@@ -155,7 +59,25 @@ chmod +x install.sh
 
 Note that by default, the Library folder may not be shown in the Finder. See the macOS documentation on how to make it visible.
 
-#### ❗️ Why macOS Blocks This Plugin
+#### ❗️ macOS Security Notice
+
+macOS may block the plugin because it's unsigned. This **does not mean** the plugin is unsafe.
+
+**Remove quarantine attribute:**
+
+```bash
+xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+```
+
+**What this command does:**
+- `xattr` = extended attribute tool
+- `-r` = recursive (process all files in the bundle)
+- `-d` = delete the specified attribute
+- `com.apple.quarantine` = the quarantine attribute
+
+Restart your DAW after running the command.
+
+#### Why macOS Blocks This Plugin
 
 When you try to load the plugin in your DAW, you may see an error:
 
@@ -172,86 +94,67 @@ As an independent developer releasing **free, open-source software** under the M
 
 This is a common issue with free audio plugins on macOS. You'll encounter the same message with many free, open-source VSTs.
 
-#### 🛡️ How to Allow the Plugin
+## Usage
 
-macOS adds a security attribute (`com.apple.quarantine`) to files downloaded from the internet. Remove it with Terminal:
+1. **Load the plugin** in your DAW (Reaper, Cubase, Ableton Live, FL Studio, etc.)
+2. **Select delay time** using the Delay Time parameter (0-5 for 6 positions)
+3. **Monitor levels** using the built-in input/output meters
+4. **Automate** the delay time parameter for creative effects
 
-```bash
-xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
-```
+### Parameter Reference
 
-**What this command does:**
-- `xattr` = extended attribute tool
-- `-r` = recursive (process all files in the bundle)
-- `-d` = delete the specified attribute
-- `com.apple.quarantine` = the quarantine attribute
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Delay Time | 0-5 | 0 | Selects delay time: 0=20ms, 1=40ms, 2=80ms, 3=120ms, 4=220ms, 5=400ms |
 
-Restart your DAW after running the command.
+### Delay Times
 
-#### ❤️ Support Independent Developers
-
-If you appreciate this plugin and the transparency about macOS's developer fees, consider:
-- **Starring the repo** on GitHub
-- **Reporting issues** you encounter
-- **Supporting development** at [buymeacoffee.com/yonie](https://buymeacoffee.com/yonie)
-
-Your support helps fund tools like Apple Developer Program enrollment for better macOS support in the future.
+| Position | Delay Time |
+|----------|------------|
+| 0 | 20 ms |
+| 1 | 40 ms |
+| 2 | 80 ms |
+| 3 | 120 ms |
+| 4 | 220 ms |
+| 5 | 400 ms |
 
 ---
 
-## Detailed Build Instructions
+## Building from Source
 
-### Step 1: Prerequisites
+If you want to build the plugin yourself, follow these instructions.
+
+### System Requirements
 
 #### Windows
-Install the required build tools using winget (Windows Package Manager):
-
-```batch
-winget install Git.Git
-winget install Kitware.CMake
-winget install Microsoft.VisualStudio.2022.BuildTools
-```
-
-Or download manually:
-- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) (Build Tools or Community)
-- [CMake](https://cmake.org/download/) (3.15+)
-- [Git](https://git-scm.com/downloads)
+- **Operating System**: Windows 10/11 (64-bit)
+- **Build Tools**: 
+  - Visual Studio 2022 Build Tools or Community Edition
+  - CMake 3.15 or higher
+  - Git
 
 #### Linux
-Install the required packages:
-
-**Ubuntu/Debian:**
-```bash
-sudo apt-get install cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
-    libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
-    libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
-    libxcb-keysyms1-dev git
-```
-
-**Fedora/RHEL:**
-```bash
-sudo dnf install cmake gcc gcc-c++ libstdc++-devel libxcb-devel libxkbcommon-devel \
-    libxkbcommon-x11-devel cairo-devel gtkmm30-devel sqlite-devel
-```
-
-**Arch Linux:**
-```bash
-sudo pacman -S cmake gcc libxcb libxkbcommon cairo gtkmm3 sqlite
-```
+- **Operating System**: Linux (x86_64)
+- **Build Tools**:
+  - GCC or Clang with C++17 support
+  - CMake 3.15 or higher
+  - Git
+- **Dependencies** (Ubuntu/Debian):
+  ```
+  sudo apt-get install cmake gcc g++ libstdc++6 libx11-xcb-dev libxcb-util-dev \
+      libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev \
+      libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev \
+      libxcb-keysyms1-dev git
+  ```
 
 #### macOS
-Install Xcode Command Line Tools:
+- **Operating System**: macOS 10.13 or higher (Intel) / macOS 11.0 or higher (Apple Silicon)
+- **Build Tools**:
+  - Xcode Command Line Tools or Xcode
+  - CMake 3.15 or higher
+  - Git
 
-```bash
-xcode-select --install
-```
-
-Homebrew packages (optional, for additional dependencies):
-```bash
-brew install cmake
-```
-
-### Step 2: Clone VST3 SDK
+### Step 1: Clone VST3 SDK
 
 If the `vst3sdk` folder is not present, clone it:
 
@@ -259,7 +162,7 @@ If the `vst3sdk` folder is not present, clone it:
 git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
 ```
 
-### Step 3: Build
+### Step 2: Build
 
 #### Windows
 Run the automated build script:
@@ -302,7 +205,7 @@ This will:
 - Run the VST3 validator (47 automated tests)
 - Output: `WetDelay/build/VST3/Release/WetDelay.vst3`
 
-### Step 4: Install
+### Step 3: Install
 
 #### Windows
 To install the plugin to your system's VST3 folder:
@@ -333,63 +236,7 @@ chmod +x install.sh
 
 This installs to `~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
 
-**Note for macOS:** The plugin is unsigned. On first load, you may need to:
-- Right-click the plugin and select "Open" 
-- Or run: `xattr -cr ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
-
-### Manual Installation
-
-#### Windows
-Alternatively, copy the built plugin manually:
-
-```batch
-xcopy /Y /I WetDelay\build\VST3\Release\WetDelay.vst3 "%COMMONPROGRAMFILES%\VST3\WetDelay.vst3\"
-```
-
-#### Linux
-Alternatively, copy the built plugin manually:
-
-```bash
-mkdir -p ~/.vst3
-cp -r WetDelay/build/VST3/WetDelay.vst3 ~/.vst3/
-```
-
-Or system-wide installation:
-```bash
-sudo cp -r WetDelay/build/VST3/WetDelay.vst3 /usr/lib/vst3/
-```
-
-#### macOS
-Alternatively, copy the built plugin manually:
-
-```bash
-mkdir -p ~/Library/Audio/Plug-Ins/VST3
-cp -r WetDelay/build/VST3/Release/WetDelay.vst3 ~/Library/Audio/Plug-Ins/VST3/
-```
-
-## Usage
-
-1. **Load the plugin** in your DAW (Reaper, Cubase, Ableton Live, FL Studio, etc.)
-2. **Select delay time** using the Delay Time parameter (0-5 for 6 positions)
-3. **Monitor levels** using the built-in input/output meters
-4. **Automate** the delay time parameter for creative effects
-
-### Parameter Reference
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Delay Time | 0-5 | 0 | Selects delay time: 0=20ms, 1=40ms, 2=80ms, 3=120ms, 4=220ms, 5=400ms |
-
-### Delay Times
-
-| Position | Delay Time |
-|----------|------------|
-| 0 | 20 ms |
-| 1 | 40 ms |
-| 2 | 80 ms |
-| 3 | 120 ms |
-| 4 | 220 ms |
-| 5 | 400 ms |
+---
 
 ## Technical Details
 
@@ -470,14 +317,14 @@ Key validations:
 - Verify the folder contains `WetDelay.vst3`
 
 **Still getting "cannot be verified" after running xattr:**
-- Try the ad-hoc code signing method (see Installation section above)
-- Some DAWs require both quarantine removal AND signing
-- Alternative: right-click the plugin → "Open" → "Open" to bypass Gatekeeper
+- Right-click the plugin → "Open" → "Open" to bypass Gatekeeper
+- Check DAW console for error messages
+- Report issue at [GitHub Issues](https://github.com/yonie/WetDelay/issues)
 
 **Plugin crashes DAW:**
 - macOS 10.13+ (Intel) or macOS 11.0+ (Apple Silicon) required
 - Check DAW console for error messages
-- Report issue at [GitHub Issues](https://github.com/yonie/wetdelay/issues)
+- Report issue at [GitHub Issues](https://github.com/yonie/WetDelay/issues)
 
 ### Runtime Issues
 
@@ -489,29 +336,6 @@ Key validations:
 **Crackling/Clicking:**
 - This shouldn't occur with discrete parameter changes
 - If it does, report as a bug with your DAW and sample rate info
-
-## Development
-
-### Building from Source
-
-If you want to modify the plugin:
-
-1. Edit source files in `WetDelay/source/`
-2. Run `build.bat` to rebuild
-3. The plugin automatically rebuilds and validates
-
-### Testing
-
-The build process automatically runs:
-- **moduleinfotool**: Generates plugin metadata
-- **validator**: Runs 47 comprehensive tests
-
-Test coverage includes:
-- Parameter automation
-- State save/restore
-- Multi-threading
-- Different buffer sizes
-- Various sample rates
 
 ## Author
 
@@ -537,7 +361,7 @@ See the VST3 SDK license files for details on SDK licensing.
 
 ## Version History
 
-### v1.1.0 (2026-03-01)
+### v1.1.0 (2026-03-09)
 - **Multi-Platform Support**:
   - Universal VST3 bundle for Windows (x64), Linux (x86_64), and macOS (Intel x86_64 + Apple Silicon arm64)
   - GitHub Actions CI/CD for automated cross-platform builds
