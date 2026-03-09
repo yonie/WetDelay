@@ -285,9 +285,32 @@ CView* DelayTimeButtonGroupCreator::create(const UIAttributes& attributes,
 
 //------------------------------------------------------------------------
 bool DelayTimeButtonGroupCreator::apply(CView* view, const UIAttributes& attributes,
-                                         const IUIDescription* description) const
+                                          const IUIDescription* description) const
 {
-    // No additional attributes needed
+    auto* control = dynamic_cast<DelayTimeButtonGroup*>(view);
+    if (!control)
+        return false;
+    
+    // Get control-tag from attributes
+    const std::string* tagAttr = attributes.getAttributeValue("control-tag");
+    if (tagAttr)
+    {
+        // Look up tag ID from UIDescription
+        int32_t tag = -1;
+        if (description)
+            tag = description->getTagForName(tagAttr->c_str());
+        
+        if (tag != -1)
+        {
+            control->setTag(tag);
+            
+            // Set listener from UIDescription - this is CRITICAL for valueChanged() to work
+            IControlListener* listener = description->getControlListener(tagAttr->c_str());
+            if (listener)
+                control->setListener(listener);
+        }
+    }
+    
     return true;
 }
 

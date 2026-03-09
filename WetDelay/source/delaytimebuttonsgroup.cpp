@@ -41,8 +41,10 @@ CMouseEventResult DelayTimeButtonGroup::onMouseDown(CPoint& where, const CButton
             // Update the control value (0-5 mapped to normalized 0.0-1.0)
             setValueNormalized(static_cast<float>(currentSelection) / 5.0f);
             
-            // Notify listeners (valueChanged will be called)
+            // Begin/end edit for proper automation support
+            beginEdit();
             valueChanged();
+            endEdit();
             
             invalid();
         }
