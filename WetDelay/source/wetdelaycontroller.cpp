@@ -7,7 +7,6 @@
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "base/source/fstreamer.h"
 #include "customviewcreator.h"
-#include "vstgui/lib/controls/csegmentbutton.h"
 
 using namespace Steinberg;
 
@@ -191,36 +190,13 @@ VSTGUI::CView* DelayButtonController::verifyView(VSTGUI::CView* view,
                                                   const VSTGUI::UIAttributes& attributes,
                                                   const VSTGUI::IUIDescription* description)
 {
-    auto* segmentButton = dynamic_cast<VSTGUI::CSegmentButton*>(view);
-    if (segmentButton)
-    {
-        if (segmentButton->getTag() == kDelayTimeParam)
-        {
-            // Store reference - VST3Editor populates segment names AFTER verifyView
-            // We clear them in valueChanged which is called after parameter binding
-            delayButton = segmentButton;
-            segmentNamesCleared = false;
-        }
-    }
+    // No special handling needed for DelayTimeButtonGroup
     return DelegationController::verifyView(view, attributes, description);
 }
 
 //------------------------------------------------------------------------
 void DelayButtonController::valueChanged(VSTGUI::CControl* control)
 {
-    // Clear segment names after VST3Editor populates them from StringListParameter
-    // This is called after parameter binding completes
-    if (delayButton && !segmentNamesCleared)
-    {
-        const auto& segments = delayButton->getSegments();
-        for (size_t i = 0; i < segments.size(); i++)
-        {
-            const_cast<VSTGUI::CSegmentButton::Segment&>(segments[i]).name = "";
-        }
-        segmentNamesCleared = true;
-        delayButton = nullptr;
-    }
-    
     // Forward to parent controller
     DelegationController::valueChanged(control);
 }
@@ -228,7 +204,7 @@ void DelayButtonController::valueChanged(VSTGUI::CControl* control)
 //------------------------------------------------------------------------
 void DelayButtonController::updateLEDIndicators(int selectedIndex)
 {
-    // Not needed with CSegmentButton - it handles visual state automatically
+    // Not needed with DelayTimeButtonGroup - ButtonSelectionFrame handles LEDs
 }
 
 //------------------------------------------------------------------------
