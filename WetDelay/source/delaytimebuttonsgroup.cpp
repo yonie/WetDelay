@@ -32,20 +32,25 @@ CMouseEventResult DelayTimeButtonGroup::onMouseDown(CPoint& where, const CButton
     
     int clickedButton = hitTest(localPoint);
     
-    if (clickedButton >= 0 && clickedButton != currentSelection)
+    if (clickedButton >= 0)  // Click inside a button region
     {
-        currentSelection = clickedButton;
-        
-        // Update the control value (0-5 mapped to normalized 0.0-1.0)
-        setValueNormalized(static_cast<float>(currentSelection) / 5.0f);
-        
-        // Notify listeners (valueChanged will be called)
-        valueChanged();
-        
-        invalid();
+        if (clickedButton != currentSelection)
+        {
+            currentSelection = clickedButton;
+            
+            // Update the control value (0-5 mapped to normalized 0.0-1.0)
+            setValueNormalized(static_cast<float>(currentSelection) / 5.0f);
+            
+            // Notify listeners (valueChanged will be called)
+            valueChanged();
+            
+            invalid();
+        }
+        return kMouseEventHandled;  // We consumed this click
     }
     
-    return kMouseEventHandled;
+    // Click missed all buttons - allow propagation to views below
+    return kMouseEventNotHandled;
 }
 
 //------------------------------------------------------------------------
