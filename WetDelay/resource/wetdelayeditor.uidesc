@@ -79,28 +79,15 @@
 		
 		<!-- ============================================ -->
 		<!-- DELAY BUTTON SELECTION                       -->
-		<!-- Transparent CSegmentButton for click handling-->
+		<!-- Invisible click layer over button area       -->
+		<!-- Visual feedback via ButtonSelectionFrame     -->
 		<!-- ============================================ -->
 		
-		<view class="CSegmentButton"
+		<view class="DelayTimeButtonGroup"
 		      control-tag="kDelayTimeParam"
 		      origin="39, 459"
 		      size="630, 119"
-		      font="TinyFont"
-		      font-color="Transparent"
-		      font-color-highlighted="Transparent"
-		      frame-color="Transparent"
-		      frame-width="0"
-		      round-radius="0"
-		      segment-names=",,,,,,"
-		      selection-color="Transparent"
-		      style="horizontal"
-		      text-alignment="center"
-		      transparent="true"
-		      gradient-start-color="Transparent"
-		      gradient-end-color="Transparent"
-		      gradient-start-color-highlighted="Transparent"
-		      gradient-end-color-highlighted="Transparent"/>
+		      transparent="true"/>
 		
 		<!-- ============================================ -->
 		<!-- LED INDICATORS (80's style per button)      -->

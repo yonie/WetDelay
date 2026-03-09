@@ -39,6 +39,8 @@ smtg_add_vst3plugin(WetDelay
     source/buttonledindicator.cpp
     source/buttonselectionframe.h
     source/buttonselectionframe.cpp
+    source/delaytimebuttonsgroup.h
+    source/delaytimebuttonsgroup.cpp
     source/customviewcreator.h
     source/customviewcreator.cpp
 )

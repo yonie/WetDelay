@@ -12,6 +12,7 @@
 #include "ledmeterview.h"
 #include "buttonledindicator.h"
 #include "buttonselectionframe.h"
+#include "delaytimebuttonsgroup.h"
 
 namespace Yonie {
 
@@ -77,6 +78,31 @@ public:
     VSTGUI::IdStringPtr getViewName() const override { return "ButtonSelectionFrame"; }
     VSTGUI::IdStringPtr getBaseViewName() const override { return "CControl"; }
     VSTGUI::UTF8StringPtr getDisplayName() const override { return "Button Selection Frame"; }
+    
+    VSTGUI::CView* create(const VSTGUI::UIAttributes& attributes,
+                          const VSTGUI::IUIDescription* description) const override;
+    
+    bool apply(VSTGUI::CView* view, const VSTGUI::UIAttributes& attributes,
+               const VSTGUI::IUIDescription* description) const override;
+    
+    bool getAttributeNames(StringList& attributeNames) const override;
+    AttrType getAttributeType(const string& attributeName) const override;
+    bool getAttributeValue(VSTGUI::CView* view, const string& attributeName,
+                           string& stringValue, const VSTGUI::IUIDescription* desc) const override;
+};
+
+//------------------------------------------------------------------------
+// DelayTimeButtonGroupCreator - Factory for creating DelayTimeButtonGroup
+//------------------------------------------------------------------------
+class DelayTimeButtonGroupCreator : public VSTGUI::ViewCreatorAdapter
+{
+public:
+    DelayTimeButtonGroupCreator();
+    
+    // IViewCreator
+    VSTGUI::IdStringPtr getViewName() const override { return "DelayTimeButtonGroup"; }
+    VSTGUI::IdStringPtr getBaseViewName() const override { return "CControl"; }
+    VSTGUI::UTF8StringPtr getDisplayName() const override { return "Delay Time Button Group"; }
     
     VSTGUI::CView* create(const VSTGUI::UIAttributes& attributes,
                           const VSTGUI::IUIDescription* description) const override;
