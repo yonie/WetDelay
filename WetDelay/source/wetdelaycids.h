@@ -14,9 +14,6 @@ static const Steinberg::FUID kWetDelayProcessorControllerUID (0xBDABF70B, 0xE045
 
 #define WetDelayProcessorVST3Category "Fx|Delay"
 
-// Message ID for meter data communication between processor and controller
-inline const char* kMeterDataMessage = "MeterData";
-
 //------------------------------------------------------------------------
 // Parameter IDs
 //------------------------------------------------------------------------

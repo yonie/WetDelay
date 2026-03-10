@@ -15,7 +15,6 @@ LEDMeterView::LEDMeterView(const CRect& size)
     : CControl(size, nullptr, -1)
 {
     setWantsFocus(false);
-    setWantsIdle(true);  // Enable idle callbacks for macOS redraw
 }
 
 //------------------------------------------------------------------------
@@ -23,9 +22,6 @@ void LEDMeterView::draw(CDrawContext* context)
 {
     // Get normalized value (0.0 to 1.0)
     float level = getValueNormalized();
-    
-    // Update old value for idle redraw checks
-    setOldValue(level);
     
     // Calculate how many segments should be lit
     int litCount = static_cast<int>(level * numSegments + 0.5f);
@@ -43,19 +39,6 @@ void LEDMeterView::draw(CDrawContext* context)
     }
     
     setDirty(false);
-}
-
-//------------------------------------------------------------------------
-void LEDMeterView::setValueNormalized(float val)
-{
-    // Just set the value - onIdle() will trigger redraw
-    CControl::setValueNormalized(val);
-}
-
-void LEDMeterView::onIdle()
-{
-    if (getOldValue() != value)
-        invalid();
 }
 
 //------------------------------------------------------------------------

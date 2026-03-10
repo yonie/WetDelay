@@ -22,10 +22,6 @@ public:
 
     // CView overrides
     void draw(VSTGUI::CDrawContext* context) override;
-    void onIdle() override;
-
-    // CControl overrides
-    void setValueNormalized(float val) override;
     
     // Configuration
     void setNumSegments(int num) { numSegments = num; }

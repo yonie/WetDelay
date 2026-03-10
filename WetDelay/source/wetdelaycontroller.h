@@ -5,8 +5,6 @@
 #pragma once
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
-#include "pluginterfaces/vst/ivstmessage.h"
-#include "vstgui/lib/cvstguitimer.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "vstgui/uidescription/delegationcontroller.h"
 #include "wetdelaycids.h"
@@ -42,9 +40,6 @@ public:
 	Steinberg::tresult PLUGIN_API setState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 	Steinberg::tresult PLUGIN_API getState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 	
-	//--- from IConnectionPoint (for messages from processor) ------------
-	Steinberg::tresult PLUGIN_API notify (Steinberg::Vst::IMessage* message) SMTG_OVERRIDE;
-	
 	// Get current delay index for UI updates
 	int getCurrentDelayIndex() const { return currentDelayIndex; }
 	void setDelayIndexFromUI(int index);
@@ -58,7 +53,6 @@ public:
 
 //------------------------------------------------------------------------
 protected:
-	VSTGUI::SharedPointer<VSTGUI::CVSTGUITimer> timer;
 	int currentDelayIndex = 0;
 	
 	friend class DelayButtonController;

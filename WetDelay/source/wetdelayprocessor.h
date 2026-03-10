@@ -71,15 +71,14 @@ protected:
 	// Meter decay factor
 	static constexpr float METER_DECAY = 0.9995f;
 	
-	// Meter update timing
-	Steinberg::int32 samplesSinceLastMeterUpdate = 0;
-	Steinberg::int32 meterUpdateInterval = 735;  // ~16.67ms at 44100Hz (60fps)
+	// Previous meter values for change detection (outputParameterChanges)
+	float oldMeterL_In = 0.0f;
+	float oldMeterR_In = 0.0f;
+	float oldMeterL_Out = 0.0f;
+	float oldMeterR_Out = 0.0f;
 	
 	// Update peak meter
 	void updatePeak(float sample, std::atomic<float>& peak);
-	
-	// Send meter data to controller via message
-	void sendMeterData();
 };
 
 //------------------------------------------------------------------------

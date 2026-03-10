@@ -4,7 +4,6 @@
 
 #include "wetdelayprocessor.h"
 #include "wetdelaycids.h"
-#include "wetdelaycontroller.h"
 
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
@@ -75,7 +74,10 @@ tresult PLUGIN_API WetDelayProcessorProcessor::setActive (TBool state)
 		inputPeakR = 0.0f;
 		outputPeakL = 0.0f;
 		outputPeakR = 0.0f;
-		samplesSinceLastMeterUpdate = 0;
+		oldMeterL_In = 0.0f;
+		oldMeterR_In = 0.0f;
+		oldMeterL_Out = 0.0f;
+		oldMeterR_Out = 0.0f;
 	}
 	return AudioEffect::setActive (state);
 }
@@ -147,12 +149,31 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 				updatePeak(outputR[i], outputPeakR);
 			}
 			
-			// Send meter data via message every ~16.67ms for 60fps (at 44100Hz that's ~735 samples)
-			samplesSinceLastMeterUpdate += data.numSamples;
-			if (samplesSinceLastMeterUpdate >= meterUpdateInterval)
+			// Send meter data via outputParameterChanges (host relays to controller on UI thread)
+			if (data.outputParameterChanges)
 			{
-				samplesSinceLastMeterUpdate = 0;
-				sendMeterData();
+				auto sendMeter = [&](Steinberg::Vst::ParamID id, float value, float& oldValue) {
+					if (oldValue != value)
+					{
+						Steinberg::int32 index = 0;
+						if (auto* paramQueue = data.outputParameterChanges->addParameterData(id, index))
+						{
+							Steinberg::int32 index2 = 0;
+							paramQueue->addPoint(0, value, index2);
+						}
+						oldValue = value;
+					}
+				};
+				
+				float inL = inputPeakL.load();
+				float inR = inputPeakR.load();
+				float outL = outputPeakL.load();
+				float outR = outputPeakR.load();
+				
+				sendMeter(kInputMeterL, inL, oldMeterL_In);
+				sendMeter(kInputMeterR, inR, oldMeterR_In);
+				sendMeter(kOutputMeterL, outL, oldMeterL_Out);
+				sendMeter(kOutputMeterR, outR, oldMeterR_Out);
 			}
 			
 			// Output is not silent
@@ -174,35 +195,11 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 }
 
 //------------------------------------------------------------------------
-void WetDelayProcessorProcessor::sendMeterData()
-{
-	// Create message to send meter data to controller
-	if (auto message = owned(allocateMessage()))
-	{
-		message->setMessageID(kMeterDataMessage);
-		
-		// Pack the four meter values
-		float meterData[4] = {
-			inputPeakL.load(),
-			inputPeakR.load(),
-			outputPeakL.load(),
-			outputPeakR.load()
-		};
-		
-		message->getAttributes()->setBinary("data", meterData, sizeof(meterData));
-		sendMessage(message);
-	}
-}
-
-//------------------------------------------------------------------------
 tresult PLUGIN_API WetDelayProcessorProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
 	// Initialize delay buffer with max delay time
 	delayBuffer.prepare(newSetup.sampleRate, 400);  // 400ms max
-	
-	// Calculate meter update interval (~16.67ms worth of samples for 60fps)
-	meterUpdateInterval = static_cast<int32>(newSetup.sampleRate / 60.0);
 	
 	return AudioEffect::setupProcessing (newSetup);
 }

@@ -103,38 +103,6 @@ tresult PLUGIN_API WetDelayProcessorController::getState (IBStream* state)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API WetDelayProcessorController::notify (Vst::IMessage* message)
-{
-	if (!message)
-		return kInvalidArgument;
-	
-	// Check if this is our meter data message
-	if (strcmp(message->getMessageID(), kMeterDataMessage) == 0)
-	{
-		const void* data = nullptr;
-		uint32 size = 0;
-		
-		if (message->getAttributes()->getBinary("data", data, size) == kResultOk)
-		{
-			if (size == 4 * sizeof(float))
-			{
-				const float* meterData = static_cast<const float*>(data);
-				
-				// Update meter parameters - this will automatically update the UI
-				setParamNormalized(kInputMeterL, meterData[0]);
-				setParamNormalized(kInputMeterR, meterData[1]);
-				setParamNormalized(kOutputMeterL, meterData[2]);
-				setParamNormalized(kOutputMeterR, meterData[3]);
-				
-				return kResultOk;
-			}
-		}
-	}
-	
-	return EditControllerEx1::notify(message);
-}
-
-//------------------------------------------------------------------------
 void WetDelayProcessorController::setDelayIndexFromUI(int index)
 {
 	if (index >= 0 && index <= 5)
