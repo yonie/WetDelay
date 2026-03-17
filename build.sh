@@ -30,6 +30,24 @@ if [ ! -d "vst3sdk" ]; then
     exit 1
 fi
 
+# Ensure VSTGUI fork with Linux fix is used
+echo "Ensuring VSTGUI fork with Linux REAPER crash fix..."
+cd vst3sdk/vstgui4 2>/dev/null || {
+    echo "ERROR: vst3sdk/vstgui4 not found. Did you clone with --recursive?"
+    exit 1
+}
+if ! git remote | grep -q "yonie"; then
+    git remote add yonie https://github.com/yonie/vstgui.git 2>/dev/null || true
+fi
+git fetch yonie 2>/dev/null
+if git branch --list "fix/linux-cairo-crash" | grep -q "."; then
+    git checkout fix/linux-cairo-crash 2>/dev/null
+else
+    git checkout -b fix/linux-cairo-crash yonie/fix/linux-cairo-crash 2>/dev/null
+fi
+cd "$SCRIPT_DIR"
+echo ""
+
 if [ -d "WetDelay/build" ]; then
     echo "Cleaning previous build..."
     rm -rf WetDelay/build
