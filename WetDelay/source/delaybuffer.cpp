@@ -175,28 +175,26 @@ void DelayBuffer::processInternalSample(float inputL, float inputR,
     delayedL = lowPassL.process(delayedL);
     delayedR = lowPassR.process(delayedR);
     
-    // 12-bit quantization with light dither
-    // Dither reduces harsh quantization artifacts for smoother sound
+    // Companding: boost before quantization for lower noise floor
+    // (same technique as Roland SDE-3000's 12-bit companded to 16-bit)
+    constexpr float QUANT_GAIN = 2.0f;
+    delayedL *= QUANT_GAIN;
+    delayedR *= QUANT_GAIN;
+
+    // 12-bit quantization with TPDF dither
     constexpr float BIT_DEPTH_LEVELS = 4096.0f;  // 2^12
-    constexpr float DITHER_AMPLITUDE = 0.5f / BIT_DEPTH_LEVELS;  // Very light: 0.5 LSB
-    
-    // Add TPDF dither (triangular probability density function)
-    // Two uniform randoms summed = triangular distribution
+    constexpr float DITHER_AMPLITUDE = 0.5f / BIT_DEPTH_LEVELS;
     float ditherL = (ditherDist(rng) + ditherDist(rng)) * DITHER_AMPLITUDE;
     float ditherR = (ditherDist(rng) + ditherDist(rng)) * DITHER_AMPLITUDE;
-    
     delayedL = std::floor((delayedL + ditherL) * BIT_DEPTH_LEVELS + 0.5f) / BIT_DEPTH_LEVELS;
     delayedR = std::floor((delayedR + ditherR) * BIT_DEPTH_LEVELS + 0.5f) / BIT_DEPTH_LEVELS;
-    
-    // Fixed noise floor at -80 dBFS (simulates analog electronics/ADC noise)
-    // -80 dBFS = 10^(-80/20) = 0.0001 peak amplitude
-    constexpr float NOISE_FLOOR_AMPLITUDE = 0.0001f;
-    
-    float noiseL = ditherDist(rng) * NOISE_FLOOR_AMPLITUDE;
-    float noiseR = ditherDist(rng) * NOISE_FLOOR_AMPLITUDE;
-    
-    outputL = delayedL + noiseL;
-    outputR = delayedR + noiseR;
+
+    // Remove companding boost
+    delayedL /= QUANT_GAIN;
+    delayedR /= QUANT_GAIN;
+
+    outputL = delayedL;
+    outputR = delayedR;
     
     // Advance write position
     writePos++;

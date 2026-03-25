@@ -22,7 +22,6 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 - **24 kHz Internal Sample Rate**: Authentic vintage digital delay processing with band-limited frequency response
 - **12-bit Quantization**: Classic gritty digital character with 4096 discrete levels
 - **TPDF Dither**: Smooth quantization with triangular probability density function dither (0.5 LSB)
-- **-80 dBFS Noise Floor**: Realistic analog electronics and ADC/DAC noise simulation
 - **Vintage Filtering**: 80 Hz high-pass and 9 kHz low-pass (6 dB/oct) for warm character
 - **Channel Crosstalk**: Authentic -40 dB (1%) L/R channel bleed simulating analog circuitry
 
@@ -262,7 +261,6 @@ This installs to `~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
 - **Delay Engine**: Circular buffer at 24 kHz internal rate
 - **Resampling**: Linear interpolation with anti-aliasing and reconstruction filters
 - **Quantization**: 12-bit uniform quantization with TPDF dither
-- **Noise Floor**: Fixed -80 dBFS analog-style noise
 - **Filtering**: 1st-order high-pass (80 Hz) and low-pass (9 kHz)
 - **Crosstalk**: 1% (-40 dB) bidirectional channel bleed
 - **Metering**: Atomic peak detection with exponential decay
@@ -379,7 +377,6 @@ See the VST3 SDK license files for details on SDK licensing.
   - 24 kHz internal sample rate with resampling
   - 12-bit quantization (4096 levels)
   - TPDF dither for smooth quantization
-  - Fixed -80 dBFS noise floor
   - Anti-aliasing and reconstruction filters
 - **Channel Crosstalk**:
   - Authentic -40 dB (1%) L/R channel bleed
