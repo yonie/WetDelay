@@ -359,6 +359,9 @@ See the VST3 SDK license files for details on SDK licensing.
 
 ## Version History
 
+### v1.1.1 (2026-03-28)
+- Fixed a bug where the selected delay time was not remembered across DAW sessions
+
 ### v1.1.0 (2026-03-09)
 - **Multi-Platform Support**:
   - Universal VST3 bundle for Windows (x64), Linux (x86_64), and macOS (Intel x86_64 + Apple Silicon arm64)

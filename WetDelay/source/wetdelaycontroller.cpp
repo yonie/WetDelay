@@ -75,7 +75,7 @@ tresult PLUGIN_API WetDelayProcessorController::setComponentState (IBStream* sta
 	IBStreamer streamer(state, kLittleEndian);
 	
 	int32 savedDelayIndex = 0;
-	if (streamer.readInt32(savedDelayIndex) == kResultTrue)
+	if (streamer.readInt32(savedDelayIndex))
 	{
 		currentDelayIndex = savedDelayIndex;
 		// Convert index to normalized value and set parameter

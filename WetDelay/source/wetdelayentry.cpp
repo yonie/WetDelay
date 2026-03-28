@@ -20,7 +20,7 @@ using namespace Yonie;
 
 BEGIN_FACTORY_DEF ("Yonie", 
 			       "https://github.com/yonie", 
-			       "mailto:yonie@yonie.org")
+			       "mailto:contact@wetvst.com")
 
 	//---First Plug-in included in this factory-------
 	// its kVstAudioEffectClass component

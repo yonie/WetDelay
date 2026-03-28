@@ -187,5 +187,7 @@ jobs:
           files: WetDelay-${{ github.ref_name }}.zip
           generate_release_notes: true
           draft: false
+          body: |
+            Fixed a bug where the selected delay time was not remembered across DAW sessions.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

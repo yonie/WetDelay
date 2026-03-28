@@ -225,7 +225,7 @@ tresult PLUGIN_API WetDelayProcessorProcessor::setState (IBStream* state)
 	IBStreamer streamer (state, kLittleEndian);
 	
 	int32 savedDelayIndex = 0;
-	if (streamer.readInt32(savedDelayIndex) == kResultTrue)
+	if (streamer.readInt32(savedDelayIndex))
 	{
 		currentDelayIndex = savedDelayIndex;
 	}
