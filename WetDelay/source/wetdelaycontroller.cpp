@@ -26,6 +26,8 @@ tresult PLUGIN_API WetDelayProcessorController::initialize (FUnknown* context)
 		return result;
 	}
 
+	registerCustomViews();
+
 	// Register delay time parameter (0-5 for 6 positions)
 	Vst::StringListParameter* delayParam = new Vst::StringListParameter(
 		STR16("Delay Time"),
