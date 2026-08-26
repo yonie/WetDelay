@@ -188,6 +188,16 @@ jobs:
           generate_release_notes: true
           draft: false
           body: |
-            Fixed a bug where the plugin GUI would not appear in FL Studio 2025.
+            **Fixes occasional clicks and crackles**
+
+            Some users heard intermittent clicks that got worse the longer WetDelay was
+            left running, and were most noticeable at small audio buffer sizes - the
+            settings you use when tracking with low latency. On rare occasions the plugin
+            could also overshoot and distort.
+
+            This release fixes that. The sound is otherwise unchanged: same delay times,
+            same character, same 80s grit.
+
+            Thanks to everyone who reported it.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
