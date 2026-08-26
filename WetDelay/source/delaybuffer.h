@@ -118,10 +118,20 @@ public:
         for (int i = 0; i < outputSamples; ++i)
         {
             // Linear interpolation between samples
-            float t = static_cast<float>(phase);
+            //
+            // FIX 1 (2026-08-26): clamp the interpolation coefficient.
+            // When a block starves, the loop below exits with `phase` still
+            // >= 1, and this line then extrapolates past the input instead of
+            // blending between two samples. Clamped it degrades to a
+            // sample-and-hold, which sits far below the 12-bit noise floor.
+            double p = phase;
+            if (p < 0.0) p = 0.0;
+            else if (p > 1.0) p = 1.0;
+            float t = static_cast<float>(p);
+
             float currentSample = (inIndex < inputSamples) ? input[inIndex] : lastSample;
             output[i] = lastSample + t * (currentSample - lastSample);
-            
+
             phase += ratio;
             while (phase >= 1.0 && inIndex < inputSamples)
             {
@@ -129,10 +139,20 @@ public:
                 phase -= 1.0;
             }
         }
-        
+
         if (inIndex > 0 && inIndex <= inputSamples)
             lastSample = input[inIndex - 1];
-            
+
+        // FIX 2 (2026-08-26): wrap the leftover phase back into [0,1).
+        // Each block asks for slightly more input than the downsampler
+        // produced, and the old code let that shortfall accumulate, so `phase`
+        // grew without bound and the overshoot worsened the longer the plugin
+        // ran - which is why the biggest spikes always landed late in a render.
+        // Every block returns exactly outputSamples regardless, so no rate is
+        // lost by dropping the debt.
+        if (phase >= 1.0 || phase < 0.0)
+            phase -= std::floor(phase);
+
         return outputSamples;
     }
     
