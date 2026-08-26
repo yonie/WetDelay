@@ -188,6 +188,6 @@ jobs:
           generate_release_notes: true
           draft: false
           body: |
-            Fixed a bug where the selected delay time was not remembered across DAW sessions.
+            Fixed a bug where the plugin GUI would not appear in FL Studio 2025.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
