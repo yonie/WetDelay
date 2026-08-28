@@ -132,6 +132,16 @@ IPlugView* PLUGIN_API WetDelayProcessorController::createView (FIDString name)
 	{
 		// create your editor here and return a IPlugView ptr of it
 		auto* view = new VSTGUI::VST3Editor (this, "view", "wetdelayeditor.uidesc");
+
+		// Discrete zoom steps, in the editor's context menu under "UI Zoom".
+		// VSTGUI handles the resize; the panel is a fixed layout, so free
+		// dragging would buy nothing a step does not. 702x702 at 100% is small
+		// on a high-DPI display, which is the actual complaint.
+		//
+		// Note that enabling zoom makes the editor open at a true 1:1 instead
+		// of being scaled by the host, so on a high-DPI screen it now starts
+		// smaller than it did. The menu is how that gets set.
+		view->setAllowedZoomFactors({0.75, 1.0, 1.25});
 		return view;
 	}
 	return nullptr;
