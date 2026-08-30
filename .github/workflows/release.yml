@@ -192,10 +192,14 @@ jobs:
           # The Installation block below is REQUIRED and stays: people land on the
           # release page from an aggregator with no idea what to do with a .vst3.
           body: |
-            Adds a UI zoom option for high-resolution displays.
+            Fixes the level meters, which read far lower than the signal actually was.
 
-            Right-click the panel, pick UI Zoom, and choose 75%, 100% or 125%. The window
-            redraws immediately.
+            They mapped amplitude linearly across their segments, so half the strip
+            covered -6 dBFS to 0: a -20 dBFS signal lit one segment of twelve, and
+            anything below -24 dBFS lit none at all. They now read in dB, one segment per
+            equal step from -48 to +18, so the meter agrees with what you are hearing.
+
+            Nothing about the sound has changed.
 
             ### Installation
 
