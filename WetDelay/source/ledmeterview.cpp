@@ -4,6 +4,8 @@
 
 #include "ledmeterview.h"
 
+#include <cmath>
+
 using namespace VSTGUI;
 
 namespace Yonie {
@@ -18,15 +20,35 @@ LEDMeterView::LEDMeterView(const CRect& size)
 }
 
 //------------------------------------------------------------------------
-void LEDMeterView::draw(CDrawContext* context)
+int LEDMeterView::litSegments() const
 {
-    // Get normalized value (0.0 to 1.0)
-    float level = getValueNormalized();
-    
-    // Calculate how many segments should be lit
-    int litCount = static_cast<int>(level * numSegments + 0.5f);
+    const float level = getValueNormalized();
+
+    int litCount;
+    if (dbScale)
+    {
+        // One segment per equal step in dB between dbLo and dbHi, so the strip
+        // reads the way a meter is expected to read.
+        if (level <= 1e-6f)
+            return 0;
+        const double db = 20.0 * std::log10(static_cast<double>(level));
+        const double step = (dbHi - dbLo) / (numSegments - 1);
+        litCount = static_cast<int>(std::floor((db - dbLo) / step)) + 1;
+    }
+    else
+    {
+        litCount = static_cast<int>(level * numSegments + 0.5f);
+    }
+
     if (litCount > numSegments) litCount = numSegments;
     if (litCount < 0) litCount = 0;
+    return litCount;
+}
+
+//------------------------------------------------------------------------
+void LEDMeterView::draw(CDrawContext* context)
+{
+    const int litCount = litSegments();
     
     // Draw each segment
     for (int i = 0; i < numSegments; i++)

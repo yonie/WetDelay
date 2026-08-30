@@ -27,6 +27,23 @@ public:
     void setNumSegments(int num) { numSegments = num; }
     void setSegmentGap(VSTGUI::CCoord gap) { segmentGap = gap; }
     void setHorizontal(bool horiz) { isHorizontal = horiz; }
+
+    // Map the incoming value as dB rather than linearly across the segments.
+    //
+    // Linear is what this did, and it makes the meter read far lower than the
+    // signal actually is: half the strip covers -6 dBFS to 0, so -20 dBFS lights
+    // ONE segment of twelve and anything below -24 lights none at all. A player
+    // reads that as "no signal" when the track is perfectly healthy.
+    //
+    // Off by default, so a meter that has not been given a range keeps the old
+    // behaviour.
+    void setDbRange(double lo, double hi) { dbLo = lo; dbHi = hi; dbScale = hi > lo; }
+    bool hasDbRange() const { return dbScale; }
+    double dbMin() const { return dbLo; }
+    double dbMax() const { return dbHi; }
+
+    // Number of segments lit for the current value.
+    int litSegments() const;
     
     // Custom view class name for VSTGUI factory
     CLASS_METHODS(LEDMeterView, CControl)
@@ -39,6 +56,8 @@ protected:
     int numSegments = 12;
     VSTGUI::CCoord segmentGap = 2;
     bool isHorizontal = true;
+    bool dbScale = false;
+    double dbLo = -48.0, dbHi = 18.0;
     
     // Color definitions for 80's LED look
     // Green zone (segments 0-7)
