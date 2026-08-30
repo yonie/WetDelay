@@ -192,13 +192,10 @@ jobs:
           # The Installation block below is REQUIRED and stays: people land on the
           # release page from an aggregator with no idea what to do with a .vst3.
           body: |
-            Added a UI zoom option. Right-click the panel, pick UI Zoom, and choose 75%,
-            100% or 125%; the window redraws on the spot. Nothing on the audio side was
-            touched.
+            Adds a UI zoom option for high-resolution displays.
 
-            125% is the ceiling because the panel graphics are bitmaps drawn at 100%, so
-            anything larger just interpolates and blurs. This came out of the 702x640
-            window being hard to read on 4K and scaled desktops.
+            Right-click the panel, pick UI Zoom, and choose 75%, 100% or 125%. The window
+            redraws immediately.
 
             ### Installation
 
