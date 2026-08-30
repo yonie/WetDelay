@@ -187,17 +187,34 @@ jobs:
           files: WetDelay-${{ github.ref_name }}.zip
           generate_release_notes: true
           draft: false
+          # NOTE: this body is hardcoded and does NOT update itself. Rewrite the
+          # description before every tag - it has lagged a release behind before.
+          # The Installation block below is REQUIRED and stays: people land on the
+          # release page from an aggregator with no idea what to do with a .vst3.
           body: |
-            **Fixes occasional clicks and crackles**
+            Added a UI zoom option. Right-click the panel, pick UI Zoom, and choose 75%,
+            100% or 125%; the window redraws on the spot. Nothing on the audio side was
+            touched.
 
-            Some users heard intermittent clicks that got worse the longer WetDelay was
-            left running, and were most noticeable at small audio buffer sizes - the
-            settings you use when tracking with low latency. On rare occasions the plugin
-            could also overshoot and distort.
+            125% is the ceiling because the panel graphics are bitmaps drawn at 100%, so
+            anything larger just interpolates and blurs. This came out of the 702x640
+            window being hard to read on 4K and scaled desktops.
 
-            This release fixes that. The sound is otherwise unchanged: same delay times,
-            same character, same 80s grit.
+            ### Installation
 
-            Thanks to everyone who reported it.
+            First, download the ZIP (see Assets below).
+
+            **Windows**: Extract to `C:\Program Files\Common Files\VST3\`
+
+            **Linux**: Extract to `~/.vst3/` or `/usr/lib/vst3/`
+
+            **macOS**:
+            1. Extract to `~/Library/Audio/Plug-Ins/VST3/`
+            2. Run: `xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
+            3. The plugin is unsigned, so macOS quarantines it. That does not mean it is unsafe.
+
+            Restart your DAW and rescan for plugins.
+
+            See the [README](https://github.com/yonie/WetDelay/blob/main/README.md) for full details.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
