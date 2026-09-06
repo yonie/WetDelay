@@ -9,6 +9,8 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 
 ![WetDelay Plugin Screenshot](screenshot.png)
 
+> **Panel too big or too small?** Right-click anywhere on the panel and pick **UI Zoom** - 75%, 100% or 125%.
+
 ## Features
 
 - **100% Wet Delay**: Pure delayed signal output with no dry signal mix
@@ -16,6 +18,7 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 - **Stereo Processing**: Independent left and right channel delay processing
 - **Visual Metering**: Real-time peak level meters for input and output
 - **VST3 Automation**: Full parameter automation support in DAWs
+- **Resizable UI**: Right-click the panel for UI Zoom - 75%, 100% or 125%
 
 ### 80s Rack-Style Character
 
