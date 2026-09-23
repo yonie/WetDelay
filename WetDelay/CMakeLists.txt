@@ -102,3 +102,19 @@ elseif(SMTG_LINUX)
     # Plugin will be built to: build/VST3/WetDelay.vst3/Contents/x86_64-linux/WetDelay.so
     # Install location: ~/.vst3/ or /usr/lib/vst3/
 endif(SMTG_MAC)
+
+# Audio Unit v2 wrapper for Logic. Only configured with the Xcode generator
+# and SMTG_AUDIOUNIT_SDK_PATH pointing at Apple's AudioUnitSDK.
+if(SMTG_MAC AND XCODE AND SMTG_ENABLE_AUV2_BUILDS)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${vst3sdk_SOURCE_DIR}/cmake/modules")
+    include(SMTG_AddVST3AuV2)
+    # The AU version follows the project version; a host caches an AU by it.
+    set(AU_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
+    math(EXPR AU_VERSION_INT "(${PROJECT_VERSION_MAJOR} << 16) | (${PROJECT_VERSION_MINOR} << 8) | ${PROJECT_VERSION_PATCH}")
+    configure_file(resource/au-info.plist.in ${CMAKE_CURRENT_BINARY_DIR}/au-info.plist @ONLY)
+    smtg_target_add_auv2(WetDelay-au
+        BUNDLE_NAME WetDelay
+        BUNDLE_IDENTIFIER org.yonie.audiounit.wetdelay
+        INFO_PLIST_TEMPLATE ${CMAKE_CURRENT_BINARY_DIR}/au-info.plist
+        VST3_PLUGIN_TARGET WetDelay)
+endif(SMTG_MAC AND XCODE AND SMTG_ENABLE_AUV2_BUILDS)
