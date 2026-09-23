@@ -124,8 +124,11 @@ jobs:
           path: WetDelay/build/Release/WetDelay.vst3/
           retention-days: 1
 
+  build-au:
+    uses: ./.github/workflows/au.yml
+
   merge-and-release:
-    needs: [build-windows, build-linux, build-macos]
+    needs: [build-windows, build-linux, build-macos, build-au]
     runs-on: macos-14
     steps:
       - name: Checkout repository
@@ -148,6 +151,12 @@ jobs:
         with:
           name: macos-build
           path: artifacts/macos
+
+      - name: Download AU artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: au-build
+          path: artifacts/au
 
       - name: Debug artifact structure
         run: |
@@ -179,7 +188,8 @@ jobs:
         run: |
           cd build
           cp ../packaging/README.txt .
-          zip -r ../WetDelay-${{ github.ref_name }}.zip WetDelay.vst3 README.txt
+          ditto -x -k ../artifacts/au/WetDelay-AU.zip .
+          zip -ry ../WetDelay-${{ github.ref_name }}.zip WetDelay.vst3 WetDelay.component README.txt
           ls -la ../WetDelay-${{ github.ref_name }}.zip
 
       - name: Create Release

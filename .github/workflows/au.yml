@@ -1,0 +1,77 @@
+name: AU build
+
+# Builds the macOS Audio Unit, validates it with auval and keeps it as an
+# artifact. Called by release.yml; can also be run by hand. Never releases.
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build-au:
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Clone VST3 SDK
+        run: git clone --recursive https://github.com/steinbergmedia/vst3sdk.git
+
+      # 1.3.0 and later need C++20; the SDK's AU wrapper builds as C++17.
+      - name: Clone AudioUnitSDK
+        run: git clone --branch AudioUnitSDK-1.2.0 --depth 1 https://github.com/apple/AudioUnitSDK.git
+
+      - name: Build universal VST3 and AU
+        run: |
+          set -o pipefail
+          exec > >(tee build.log) 2>&1
+          mkdir -p ~/Library/Audio/Plug-Ins/Components
+          mkdir -p build_au
+          cd build_au
+          cmake ../WetDelay -GXcode -DCMAKE_BUILD_TYPE=Release             -DSMTG_CREATE_PLUGIN_LINK=0 -DSMTG_DISABLE_CODE_SIGNING=ON             -DSMTG_AUDIOUNIT_SDK_PATH="$GITHUB_WORKSPACE/AudioUnitSDK"
+          xcodebuild -configuration Release -target WetDelay-au ONLY_ACTIVE_ARCH=NO -jobs $(sysctl -n hw.ncpu)
+
+      - name: Report build errors
+        if: failure()
+        run: |
+          grep -E " error: |CMake Error" build.log | head -40 | while IFS= read -r l; do echo "::error::$l"; done
+
+      - name: Assemble self-contained component
+        run: |
+          VST3=$(find build_au -name "WetDelay.vst3" -type d -path "*/Release/*" | head -1)
+          COMP=$(find build_au -name "WetDelay.component" -type d -path "*/Release/*" | head -1)
+          echo "VST3: $VST3"
+          echo "AU:   $COMP"
+          if [ -z "$VST3" ] || [ -z "$COMP" ]; then
+            echo "ERROR: build output not found"
+            exit 1
+          fi
+          mkdir -p out
+          cp -R "$COMP" out/
+          # The SDK links the VST3 in as a symlink to the build tree; ship a real copy.
+          rm -rf out/WetDelay.component/Contents/Resources/plugin.vst3
+          cp -R "$VST3" out/WetDelay.component/Contents/Resources/plugin.vst3
+          lipo -info out/WetDelay.component/Contents/MacOS/WetDelay
+          lipo -info out/WetDelay.component/Contents/Resources/plugin.vst3/Contents/MacOS/WetDelay
+          codesign --force --deep --sign - out/WetDelay.component
+          codesign -v out/WetDelay.component
+
+      - name: Validate with auval
+        run: |
+          rm -rf ~/Library/Audio/Plug-Ins/Components/WetDelay.component
+          cp -R out/WetDelay.component ~/Library/Audio/Plug-Ins/Components/
+          killall -9 AudioComponentRegistrar || true
+          auval -v aufx Wdly WetV
+
+      # Zipped with ditto: an artifact upload drops the executable bit and
+      # symlinks, which would break the bundle.
+      - name: Zip component
+        run: |
+          cd out
+          ditto -c -k --sequesterRsrc --keepParent WetDelay.component WetDelay-AU.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: au-build
+          path: out/WetDelay-AU.zip
+          retention-days: 7
