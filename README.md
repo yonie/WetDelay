@@ -3,7 +3,7 @@
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![VST3](https://img.shields.io/badge/VST3-Compatible-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
-![Version](https://img.shields.io/badge/version-1.2.1-orange)
+[![Version](https://img.shields.io/github/v/release/yonie/WetDelay?label=version&color=orange)](https://github.com/yonie/WetDelay/releases/latest)
 
 A professional stereo delay VST3 plugin with authentic 80s rack-style digital delay character.
 
@@ -359,38 +359,6 @@ See the VST3 SDK license files for details on SDK licensing.
 - Steinberg Media Technologies for the VST3 SDK
 - VSTGUI framework for cross-platform GUI support
 - The audio plugin development community
-
-## Version History
-
-### v1.1.3 (2026-03-28)
-- Fixed a bug where the selected delay time was not remembered across DAW sessions
-
-### v1.1.0 (2026-03-09)
-- **Multi-Platform Support**:
-  - Universal VST3 bundle for Windows (x64), Linux (x86_64), and macOS (Intel x86_64 + Apple Silicon arm64)
-  - GitHub Actions CI/CD for automated cross-platform builds
-  - Single download contains all platform binaries
-
-### v1.0.0 (2026-01-07)
-- Initial release
-- Core stereo delay functionality
-- 6 fixed delay times (20-400ms)
-- 100% wet output
-- Input/output peak metering
-- Full VST3 automation support
-- Validated with official VST3 validator
-- **80s Rack-Style Character**:
-  - 24 kHz internal sample rate with resampling
-  - 12-bit quantization (4096 levels)
-  - TPDF dither for smooth quantization
-  - Anti-aliasing and reconstruction filters
-- **Channel Crosstalk**:
-  - Authentic -40 dB (1%) L/R channel bleed
-  - Simulates analog circuitry imperfections
-
----
-
-**Built with ❤️ and precision engineering**
 
 ## Support
 
