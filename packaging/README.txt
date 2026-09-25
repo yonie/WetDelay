@@ -33,8 +33,9 @@ macOS
   Copy the .component (Logic, GarageBand) to:
     ~/Library/Audio/Plug-Ins/Components/
 
-  If macOS refuses to open the plug-in, clear the download quarantine
-  flag in Terminal:
+  Both are signed and notarised by Apple, so macOS opens them without
+  a warning. If it still refuses one (older releases were not signed),
+  clear the download quarantine flag in Terminal:
     xattr -cr ~/Library/Audio/Plug-Ins/VST3/<Name>.vst3
     xattr -cr ~/Library/Audio/Plug-Ins/Components/<Name>.component
 
