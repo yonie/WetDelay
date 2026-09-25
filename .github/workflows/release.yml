@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - 'v*'
+  # A manual run builds, signs and notarises the zip and keeps it as an
+  # artifact. Only a tag publishes a release.
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -174,28 +177,72 @@ jobs:
           chmod +x scripts/merge-vst3.sh
           ./scripts/merge-vst3.sh
 
-      - name: Code sign universal VST3 bundle
-        run: |
-          echo "Re-signing universal VST3 bundle for macOS..."
-          codesign --force --deep --sign - build/WetDelay.vst3
+      - name: Unpack Audio Unit
+        run: ditto -x -k artifacts/au/WetDelay-AU.zip build
 
-      - name: Verify universal bundle signature
+      - name: Sign and notarise for macOS
+        env:
+          MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
+          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          NOTARY_KEY_P8: ${{ secrets.NOTARY_KEY_P8 }}
+          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          NOTARY_ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
         run: |
-          echo "Verifying universal bundle signature..."
-          codesign -v build/WetDelay.vst3
+          chmod +x scripts/sign-macos.sh
+          ./scripts/sign-macos.sh build/WetDelay.vst3 build/WetDelay.component
 
       - name: Create ZIP archive
         run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            ZIP=WetDelay-${{ github.ref_name }}.zip
+          else
+            ZIP=WetDelay-test-${GITHUB_SHA::7}.zip
+          fi
+          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
           cd build
           cp ../packaging/README.txt .
-          ditto -x -k ../artifacts/au/WetDelay-AU.zip .
-          zip -ry ../WetDelay-${{ github.ref_name }}.zip WetDelay.vst3 WetDelay.component README.txt
-          ls -la ../WetDelay-${{ github.ref_name }}.zip
+          zip -ry ../$ZIP WetDelay.vst3 WetDelay.component README.txt
+          ls -la ../$ZIP
+
+      # Plays the user: unpack the zip as downloaded, flag it the way a browser
+      # or chat app does, and ask Gatekeeper whether it would open.
+      - name: Gatekeeper check on the zip as downloaded
+        run: |
+          rm -rf gk && mkdir gk && cd gk
+          ditto -x -k "../$ZIP" .
+          QUARANTINE="0083;$(printf '%x' $(date +%s));Safari;$(uuidgen)"
+          xattr -w -r com.apple.quarantine "$QUARANTINE" WetDelay.vst3 WetDelay.component
+          xattr -p com.apple.quarantine WetDelay.component
+          for B in WetDelay.vst3 WetDelay.component; do
+            spctl --assess --type open --context context:primary-signature --verbose=2 "$B"
+          done
+          syspolicy_check distribution WetDelay.vst3
+          # On the component syspolicy_check stops at "Internal Xprotect Error",
+          # a fault in the tool rather than a verdict (seen 2026-09-25 with a
+          # notarised component that passes Gatekeeper). The auval load below,
+          # of a quarantined copy, is the test that counts.
+          syspolicy_check distribution WetDelay.component || true
+          rm -rf ~/Library/Audio/Plug-Ins/Components/WetDelay.component
+          mkdir -p ~/Library/Audio/Plug-Ins/Components
+          ditto WetDelay.component ~/Library/Audio/Plug-Ins/Components/WetDelay.component
+          xattr -p com.apple.quarantine ~/Library/Audio/Plug-Ins/Components/WetDelay.component
+          killall -9 AudioComponentRegistrar || true
+          auval -v aufx Wdly WetV
+
+      - name: Upload test zip
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-test-zip
+          path: ${{ env.ZIP }}
+          retention-days: 7
 
       - name: Create Release
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v1
         with:
-          files: WetDelay-${{ github.ref_name }}.zip
+          files: ${{ env.ZIP }}
           generate_release_notes: true
           draft: false
           # NOTE: this body is hardcoded and does NOT update itself. Rewrite the
@@ -224,10 +271,7 @@ jobs:
 
             **Linux**: Extract to `~/.vst3/` or `/usr/lib/vst3/`
 
-            **macOS**:
-            1. Extract to `~/Library/Audio/Plug-Ins/VST3/`
-            2. Run: `xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3`
-            3. The plugin is unsigned, so macOS quarantines it. That does not mean it is unsafe.
+            **macOS**: Copy `WetDelay.vst3` to `~/Library/Audio/Plug-Ins/VST3/`, and `WetDelay.component` (Logic, GarageBand) to `~/Library/Audio/Plug-Ins/Components/`
 
             Restart your DAW and rescan for plugins.
 
