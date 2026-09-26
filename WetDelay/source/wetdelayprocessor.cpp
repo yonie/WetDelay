@@ -123,12 +123,10 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 		Vst::AudioBusBuffers& output = data.outputs[0];
 		
 		// Ensure we have stereo
-		if (input.numChannels >= 2 && output.numChannels >= 2)
+		// Mono buses become stereo here: see monobus.h.
+		float *inputL, *inputR, *outputL, *outputR;
+		if (monoBus.begin(input, output, data.numSamples, inputL, inputR, outputL, outputR))
 		{
-			float* inputL = input.channelBuffers32[0];
-			float* inputR = input.channelBuffers32[1];
-			float* outputL = output.channelBuffers32[0];
-			float* outputR = output.channelBuffers32[1];
 			
 			// Measure input levels
 			for (int32 i = 0; i < data.numSamples; i++)
@@ -177,6 +175,7 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 			}
 			
 			// Output is not silent
+			monoBus.end(output, data.numSamples, outputL, outputR);
 			output.silenceFlags = 0;
 		}
 		else
@@ -195,12 +194,25 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 }
 
 //------------------------------------------------------------------------
+// All four mono/stereo layouts are accepted; monobus.h turns mono into the
+// stereo the processor expects. The SDK default would accept anything and
+// leave process() to face a bus it cannot handle.
+tresult PLUGIN_API WetDelayProcessorProcessor::setBusArrangements(Vst::SpeakerArrangement* inputs, int32 numIns,
+                                            Vst::SpeakerArrangement* outputs, int32 numOuts)
+{
+    if (!Wet::MonoBus::accepts(inputs, numIns, outputs, numOuts))
+        return kResultFalse;
+    return AudioEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
+}
+
+//------------------------------------------------------------------------
 tresult PLUGIN_API WetDelayProcessorProcessor::setupProcessing (Vst::ProcessSetup& newSetup)
 {
 	//--- called before any processing ----
 	// Initialize delay buffer with max delay time
 	delayBuffer.prepare(newSetup.sampleRate, 400);  // 400ms max
 	
+	monoBus.prepare(newSetup.maxSamplesPerBlock);
 	return AudioEffect::setupProcessing (newSetup);
 }
 
