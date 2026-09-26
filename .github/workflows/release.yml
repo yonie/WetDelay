@@ -250,14 +250,15 @@ jobs:
           # The Installation block below is REQUIRED and stays: people land on the
           # release page from an aggregator with no idea what to do with a .vst3.
           body: |
-            Fixes the level meters, which read far lower than the signal actually was.
+            **WetDelay 1.3.0**
 
-            They mapped amplitude linearly across their segments, so half the strip
-            covered -6 dBFS to 0: a -20 dBFS signal lit one segment of twelve, and
-            anything below -24 dBFS lit none at all. They now read in dB, one segment per
-            equal step from -48 to +18, so the meter agrees with what you are hearing.
+            What's new:
 
-            Nothing about the sound has changed.
+            - An Audio Unit for Logic and GarageBand, next to the VST3.
+            - Signed and notarised by Apple, so macOS opens it without a warning.
+            - Mono tracks now work (mono in to mono out, or mono in to stereo out).
+
+            The sound stays the same, and saved projects reload with the same settings.
 
             ### Resizing the panel
 
