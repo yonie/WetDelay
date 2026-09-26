@@ -45,3 +45,10 @@ Linux
     /usr/lib/vst3/      (all users)
 
 Then restart your DAW and rescan for plug-ins.
+
+
+MAKING THE PANEL BIGGER OR SMALLER
+----------------------------------
+
+Right-click anywhere on the plug-in and choose UI Zoom: 75%, 100% or
+125%.
