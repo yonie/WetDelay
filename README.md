@@ -56,45 +56,21 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
    ```
    ~/Library/Audio/Plug-Ins/VST3/
    ```
-4. **Remove quarantine attribute** (see below)
+4. **Copy** `WetDelay.component` to `~/Library/Audio/Plug-Ins/Components/` for Logic and GarageBand
 5. **Restart your DAW** and rescan plugins
 
 Note that by default, the Library folder may not be shown in the Finder. See the macOS documentation on how to make it visible.
 
-#### ❗️ macOS Security Notice
+The plug-in is signed and notarised by Apple, so macOS opens it without a warning.
 
-macOS may block the plugin because it's unsigned. This **does not mean** the plugin is unsafe.
+#### If macOS still blocks it
 
-**Remove quarantine attribute:**
+Older releases were not signed. If macOS says the plug-in "cannot be opened because the developer cannot be verified", remove the quarantine flag in Terminal and restart your DAW:
 
 ```bash
-xattr -rd com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+xattr -cr ~/Library/Audio/Plug-Ins/VST3/WetDelay.vst3
+xattr -cr ~/Library/Audio/Plug-Ins/Components/WetDelay.component
 ```
-
-**What this command does:**
-- `xattr` = extended attribute tool
-- `-r` = recursive (process all files in the bundle)
-- `-d` = delete the specified attribute
-- `com.apple.quarantine` = the quarantine attribute
-
-Restart your DAW after running the command.
-
-#### Why macOS Blocks This Plugin
-
-When you try to load the plugin in your DAW, you may see an error:
-
-> "WetDelay.vst3" cannot be opened because the developer cannot be verified.
-
-This **does not mean** the plugin contains malware or is unsafe.
-
-This is due to **Apple's security policy**, which requires developers to:
-- Enroll in the Apple Developer Program
-- Pay **$99/year** for a developer certificate
-- Notarize each build with Apple
-
-As an independent developer releasing **free, open-source software** under the MIT license, I currently don't have the budget for Apple's developer program. The complete source code is available on GitHub for anyone to inspect and build themselves.
-
-This is a common issue with free audio plugins on macOS. You'll encounter the same message with many free, open-source VSTs.
 
 ## Usage
 
@@ -312,12 +288,12 @@ Key validations:
 ### macOS Issues
 
 **Plugin not appearing in DAW:**
-- You forgot to remove the quarantine attribute - see Installation section above
-- Restart your DAW after running the `xattr` command
+- Restart your DAW and rescan
 - Check VST3 scan path: `~/Library/Audio/Plug-Ins/VST3/`
 - Verify the folder contains `WetDelay.vst3`
 
-**Still getting "cannot be verified" after running xattr:**
+**Getting "cannot be verified":**
+- Only older, unsigned releases do this - see "If macOS still blocks it" above
 - Right-click the plugin → "Open" → "Open" to bypass Gatekeeper
 - Check DAW console for error messages
 - Report issue at [GitHub Issues](https://github.com/yonie/WetDelay/issues)
