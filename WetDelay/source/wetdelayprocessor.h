@@ -7,6 +7,7 @@
 #include "public.sdk/source/vst/vstaudioeffect.h"
 #include "delaybuffer.h"
 #include "wetdelaycids.h"
+#include "monobus.h"
 #include <atomic>
 
 namespace Yonie {
@@ -46,6 +47,9 @@ public:
 
 	/** Here we go...the process call */
 	Steinberg::tresult PLUGIN_API process (Steinberg::Vst::ProcessData& data) SMTG_OVERRIDE;
+	Steinberg::tresult PLUGIN_API setBusArrangements(Steinberg::Vst::SpeakerArrangement* inputs, Steinberg::int32 numIns,
+	                                             Steinberg::Vst::SpeakerArrangement* outputs, Steinberg::int32 numOuts) SMTG_OVERRIDE;
+	Wet::MonoBus monoBus;   // mono inputs and outputs, see monobus.h
 		
 	/** For persistence */
 	Steinberg::tresult PLUGIN_API setState (Steinberg::IBStream* state) SMTG_OVERRIDE;
