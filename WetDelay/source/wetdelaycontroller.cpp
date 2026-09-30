@@ -3,6 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "wetdelaycontroller.h"
+#include "weteditor.h"
 #include "wetdelaycids.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "base/source/fstreamer.h"
@@ -131,7 +132,7 @@ IPlugView* PLUGIN_API WetDelayProcessorController::createView (FIDString name)
 	if (FIDStringsEqual (name, Vst::ViewType::kEditor))
 	{
 		// create your editor here and return a IPlugView ptr of it
-		auto* view = new VSTGUI::VST3Editor (this, "view", "wetdelayeditor.uidesc");
+		auto* view = new Yonie::WetEditor (this, "view", "wetdelayeditor.uidesc");
 
 		// Discrete zoom steps, in the editor's context menu under "UI Zoom".
 		// VSTGUI handles the resize; the panel is a fixed layout, so free
