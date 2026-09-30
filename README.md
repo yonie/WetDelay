@@ -7,7 +7,9 @@
 
 A professional stereo delay VST3 plugin with authentic 80s rack-style digital delay character.
 
-![WetDelay Plugin Screenshot](screenshot.png)
+**Download:** [wetvst.com/wetdelay](https://wetvst.com/wetdelay/)
+
+[![WetDelay Plugin Screenshot](screenshot.png)](https://wetvst.com/wetdelay/)
 
 > **Panel too big or too small?** Right-click anywhere on the panel and pick **UI Zoom** - 75%, 100% or 125%.
 
@@ -32,7 +34,7 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 
 ### Windows
 
-1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/WetDelay/releases)
+1. **Download** the latest release from [wetvst.com](https://wetvst.com/wetdelay/) or [GitHub Releases](https://github.com/yonie/WetDelay/releases)
 2. **Extract** the ZIP file
 3. **Copy** `WetDelay.vst3` to your VST3 folder:
    - User: `C:\Users\[Username]\Documents\VST3\`
@@ -41,7 +43,7 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 
 ### Linux
 
-1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/WetDelay/releases)
+1. **Download** the latest release from [wetvst.com](https://wetvst.com/wetdelay/) or [GitHub Releases](https://github.com/yonie/WetDelay/releases)
 2. **Extract** the ZIP file
 3. **Copy** `WetDelay.vst3` to your VST3 folder:
    - User: `~/.vst3/`
@@ -50,7 +52,7 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 
 ### macOS
 
-1. **Download** the latest release from [GitHub Releases](https://github.com/yonie/WetDelay/releases)
+1. **Download** the latest release from [wetvst.com](https://wetvst.com/wetdelay/) or [GitHub Releases](https://github.com/yonie/WetDelay/releases)
 2. **Extract** the ZIP file
 3. **Copy** `WetDelay.vst3` to your VST3 folder:
    ```
