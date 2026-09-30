@@ -257,8 +257,10 @@ jobs:
             What's new:
 
             - Linux: no more crash when the editor opens in Carla, or in any host that hands its event loop over through the plug-in window.
+            - UI Zoom now sits directly in the right-click menu, so it also shows in hosts that leave out a plug-in's submenus (Studio One).
+            - The window no longer shows resize arrows it could not act on; UI Zoom changes the size.
 
-            Windows and macOS behave exactly as before. The sound stays the same, and saved projects reload with the same settings.
+            The sound stays the same, and saved projects reload with the same settings.
 
             ### Resizing the panel
 

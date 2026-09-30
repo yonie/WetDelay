@@ -13,9 +13,11 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 - Linux: no more crash when the editor opens in Carla, or in any host that hands its event loop over through the plug-in window.
+- UI Zoom now sits directly in the right-click menu, so it also shows in hosts that leave out a plug-in's submenus (Studio One).
 
 ### Changed
-- Nothing on Windows and macOS; the sound and saved settings are unchanged.
+- The window no longer shows resize arrows it could not act on; UI Zoom changes the size.
+- The sound and saved settings are unchanged.
 
 ## [1.3.0] - 2026-09-26
 
