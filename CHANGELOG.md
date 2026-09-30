@@ -9,6 +9,14 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-09-30
+
+### Fixed
+- Linux: no more crash when the editor opens in Carla, or in any host that hands its event loop over through the plug-in window.
+
+### Changed
+- Nothing on Windows and macOS; the sound and saved settings are unchanged.
+
 ## [1.3.0] - 2026-09-26
 
 ### Added
