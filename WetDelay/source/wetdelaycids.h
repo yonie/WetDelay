@@ -26,8 +26,12 @@ enum WetDelayParams : Steinberg::Vst::ParamID
 	kInputMeterR = 2,
 	kOutputMeterL = 3,
 	kOutputMeterR = 4,
-	
-	kParamCount = 5
+
+	// Tap tempo (taptempo.h): hidden, set by tapping the logo, saved with the session.
+	kTapOnParam = 5,      // 1 = the delay follows the tapped time
+	kTapMsParam = 6,      // the tapped time, kTapMinMs..kTapMaxMs
+
+	kParamCount = 7
 };
 
 // Button control tags (100-105 for the 6 delay buttons)
@@ -40,6 +44,15 @@ enum ButtonTags
 	kDelayButton4 = 104,
 	kDelayButton5 = 105
 };
+
+constexpr double kTapMinMs = 100.0;
+constexpr double kTapMaxMs = 2000.0;
+inline double tapMsOf(double norm) { return kTapMinMs + norm * (kTapMaxMs - kTapMinMs); }
+inline double tapNormOf(double ms) { return (ms - kTapMinMs) / (kTapMaxMs - kTapMinMs); }
+
+// Saved state after the delay index: this marker, then tap on (int32) and tap ms (double).
+// A stream without it (every release before tap tempo) loads with tap tempo off.
+constexpr Steinberg::int32 kTapStateMarker = 0x31504154;   // "TAP1"
 
 //------------------------------------------------------------------------
 } // namespace Yonie

@@ -95,6 +95,12 @@
 		<!-- Visual feedback via ButtonSelectionFrame     -->
 		<!-- ============================================ -->
 		
+		<!-- Tap tempo: tap the logo to the beat (taptempo.h). Draws nothing. -->
+		<view class="CView" custom-view-name="TapLogo"
+		      origin="85, 228"
+		      size="535, 100"
+		      transparent="true"/>
+
 		<view class="DelayTimeButtonGroup"
 		      control-tag="kDelayTimeParam"
 		      origin="39, 459"

@@ -86,7 +86,7 @@ void DelayBuffer::prepare(double sampleRate, int maxDelayMs)
 //------------------------------------------------------------------------
 void DelayBuffer::processStereo(float* leftIn, float* leftOut,
                                 float* rightIn, float* rightOut,
-                                int numSamples, int delayMs)
+                                int numSamples, int delayMs, int capSamples)
 {
     if (bufferL.empty() || bufferR.empty())
         return;
@@ -94,6 +94,8 @@ void DelayBuffer::processStereo(float* leftIn, float* leftOut,
     // Calculate delay in samples at INTERNAL rate
     int delaySamples = msToSamples(delayMs);
     delaySamples = std::max(1, std::min(delaySamples, maxSamples - 1));
+    if (capSamples > 0)
+        delaySamples = std::min(delaySamples, capSamples);
     
     // Step 1: Anti-alias filter the input (at host rate)
     std::vector<float> filteredInL(numSamples);

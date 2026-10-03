@@ -4,6 +4,8 @@
 
 #include "buttonselectionframe.h"
 
+#include <cmath>
+
 using namespace VSTGUI;
 
 namespace Yonie {
@@ -49,8 +51,9 @@ void ButtonSelectionFrame::draw(CDrawContext* context)
         
         CRect ledRect(ledX, ledY, ledX + ledWidth, ledY + ledHeight);
         
-        // Choose color based on selection state
-        bool isSelected = (i == selectedIndex);
+        // Choose color based on selection state; in tap tempo all six blink on the beat
+        const bool tapping = tapHost && tapHost->tapActive();
+        bool isSelected = tapping ? tapLit() : (i == selectedIndex);
         
         if (isSelected)
         {
@@ -70,6 +73,41 @@ void ButtonSelectionFrame::draw(CDrawContext* context)
     }
     
     setDirty(false);
+}
+
+//------------------------------------------------------------------------
+ButtonSelectionFrame::~ButtonSelectionFrame()
+{
+    if (blinkTimer)
+        blinkTimer->stop();
+}
+
+// Lit for the first quarter of each beat, counted from the last tap.
+bool ButtonSelectionFrame::tapLit() const
+{
+    const double period = tapHost->tapPeriodSeconds();
+    if (period <= 0.0)
+        return false;
+    double phase = std::fmod(TapHost::tapClock() - tapHost->tapOrigin(), period) / period;
+    if (phase < 0.0)
+        phase += 1.0;
+    return phase < 0.25;
+}
+
+void ButtonSelectionFrame::setTapHost(TapHost* host)
+{
+    tapHost = host;
+    // Redraw only when the blink or the mode changes; 15 ms keeps the beat tight.
+    blinkTimer = VSTGUI::makeOwned<VSTGUI::CVSTGUITimer>([this](VSTGUI::CVSTGUITimer*) {
+        const bool tapping = tapHost && tapHost->tapActive();
+        const bool lit = tapping ? tapLit() : false;
+        if (lit != shownBlink || tapping != shownTapping)
+        {
+            shownBlink = lit;
+            shownTapping = tapping;
+            invalid();
+        }
+    }, 15);
 }
 
 //------------------------------------------------------------------------

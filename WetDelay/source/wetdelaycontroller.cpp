@@ -3,6 +3,10 @@
 //------------------------------------------------------------------------
 
 #include "wetdelaycontroller.h"
+#include "buttonselectionframe.h"
+
+#include <cmath>
+#include <cstring>
 #include "weteditor.h"
 #include "wetdelaycids.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
@@ -56,6 +60,13 @@ tresult PLUGIN_API WetDelayProcessorController::initialize (FUnknown* context)
 	parameters.addParameter(STR16("Output Meter R"), nullptr, 0, 0,
 		Vst::ParameterInfo::kIsReadOnly, kOutputMeterR);
 
+	// Tap tempo (taptempo.h). Hidden: set by tapping the logo, never offered for automation.
+	parameters.addParameter(STR16("Tap Tempo"), nullptr, 1, 0,
+		Vst::ParameterInfo::kIsHidden, kTapOnParam);
+	parameters.addParameter(new Vst::RangeParameter(STR16("Tap Time"), kTapMsParam, STR16("ms"),
+		kTapMinMs, kTapMaxMs, 500.0, static_cast<int32>(kTapMaxMs - kTapMinMs),
+		Vst::ParameterInfo::kIsHidden));
+
 	return result;
 }
 
@@ -84,6 +95,17 @@ tresult PLUGIN_API WetDelayProcessorController::setComponentState (IBStream* sta
 		// Convert index to normalized value and set parameter
 		setParamNormalized(kDelayTimeParam, savedDelayIndex / 5.0);
 	}
+
+	// Tap tempo, appended later; a session saved before it ends here and loads with it off.
+	int32 marker = 0, on = 0;
+	double ms = 500.0;
+	if (streamer.readInt32(marker) && marker == kTapStateMarker && streamer.readInt32(on) && streamer.readDouble(ms))
+	{
+		setParamNormalized(kTapOnParam, on ? 1.0 : 0.0);
+		setParamNormalized(kTapMsParam, tapNormOf(ms));
+	}
+	else
+		setParamNormalized(kTapOnParam, 0.0);
 
 	return kResultOk;
 }
@@ -149,6 +171,68 @@ IPlugView* PLUGIN_API WetDelayProcessorController::createView (FIDString name)
 		return view;
 	}
 	return nullptr;
+}
+
+//------------------------------------------------------------------------
+// Tap tempo
+//------------------------------------------------------------------------
+void WetDelayProcessorController::setHidden (Vst::ParamID id, double norm)
+{
+	setParamNormalized (id, norm);
+	EditControllerEx1::beginEdit (id);
+	performEdit (id, getParamNormalized (id));
+	EditControllerEx1::endEdit (id);
+}
+
+// Taps more than two seconds apart start a new count. From the third tap the delay follows the
+// average interval of the last five taps, and every further tap refines it.
+void WetDelayProcessorController::tap ()
+{
+	const double now = tapClock ();
+	if (!taps.empty () && now - taps.back () > 2.0)
+		taps.clear ();
+	taps.push_back (now);
+	if (taps.size () > 5)
+		taps.erase (taps.begin ());
+	if (taps.size () < 3)
+		return;
+	double ms = 1000.0 * (taps.back () - taps.front ()) / (taps.size () - 1);
+	ms = ms < kTapMinMs ? kTapMinMs : ms > kTapMaxMs ? kTapMaxMs : ms;
+	beatOrigin = now;
+	setHidden (kTapMsParam, tapNormOf (std::floor (ms + 0.5)));
+	if (!tapActive ())
+		setHidden (kTapOnParam, 1.0);
+}
+
+tresult WetDelayProcessorController::beginEdit (Vst::ParamID tag)
+{
+	if (tag == kDelayTimeParam && tapActive ())
+	{
+		taps.clear ();
+		setHidden (kTapOnParam, 0.0);
+	}
+	return EditControllerEx1::beginEdit (tag);
+}
+
+VSTGUI::CView* WetDelayProcessorController::createCustomView (VSTGUI::UTF8StringPtr name,
+	const VSTGUI::UIAttributes& attributes, const VSTGUI::IUIDescription*, VSTGUI::VST3Editor*)
+{
+	if (name && std::strcmp (name, "TapLogo") == 0)
+	{
+		VSTGUI::CPoint origin, size;
+		attributes.getPointAttribute ("origin", origin);
+		attributes.getPointAttribute ("size", size);
+		return new TapLogo (VSTGUI::CRect (origin, size), this);
+	}
+	return nullptr;
+}
+
+VSTGUI::CView* WetDelayProcessorController::verifyView (VSTGUI::CView* view, const VSTGUI::UIAttributes&,
+	const VSTGUI::IUIDescription*, VSTGUI::VST3Editor*)
+{
+	if (auto* frame = dynamic_cast<ButtonSelectionFrame*> (view))
+		frame->setTapHost (this);
+	return view;
 }
 
 //------------------------------------------------------------------------
