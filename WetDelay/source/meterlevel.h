@@ -22,6 +22,9 @@
 #pragma once
 
 #include <cmath>
+#include <cstdlib>
+#include <string>
+#include <vector>
 
 namespace Yonie {
 namespace Meter {
@@ -44,6 +47,22 @@ inline float encode(float linear)
 inline double decodeDb(float normalized)
 {
     return kFloorDb + static_cast<double>(normalized) * (kCeilDb - kFloorDb);
+}
+
+// "-60, -48, ..." to numbers, for a ladder written in the .uidesc.
+inline std::vector<double> parseList(const std::string& text)
+{
+    std::vector<double> out;
+    const char* c = text.c_str();
+    while (*c)
+    {
+        char* end = nullptr;
+        const double v = std::strtod(c, &end);
+        if (end == c) { ++c; continue; }
+        out.push_back(v);
+        c = end;
+    }
+    return out;
 }
 
 } // namespace Meter
