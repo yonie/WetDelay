@@ -11,7 +11,7 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 
 [![WetDelay Plugin Screenshot](screenshot.png)](https://wetvst.com/wetdelay/)
 
-> **Panel too big or too small?** Right-click anywhere on the panel and pick **UI Zoom** - 75%, 100% or 125%.
+> **Panel too big or too small?** Right-click anywhere on the panel and pick **UI Zoom** - 50%, 75%, 100% or 125%.
 
 ## Features
 
@@ -20,7 +20,8 @@ A professional stereo delay VST3 plugin with authentic 80s rack-style digital de
 - **Stereo Processing**: Independent left and right channel delay processing
 - **Visual Metering**: Real-time peak level meters for input and output
 - **VST3 Automation**: Full parameter automation support in DAWs
-- **Resizable UI**: Right-click the panel for UI Zoom - 75%, 100% or 125%
+- **Resizable UI**: Right-click the panel for UI Zoom - 50%, 75%, 100% or 125%
+- **Hidden tap tempo**: Tap the logo in time with the music (see below)
 
 ### 80s Rack-Style Character
 
@@ -80,6 +81,14 @@ xattr -cr ~/Library/Audio/Plug-Ins/Components/WetDelay.component
 2. **Select delay time** using the Delay Time parameter (0-5 for 6 positions)
 3. **Monitor levels** using the built-in input/output meters
 4. **Automate** the delay time parameter for creative effects
+
+### Tap tempo, the hidden mode
+
+A small thank-you to celebrate 10,000 WET downloads, and because so many of you asked for it: as of version 1.4.0, WetDelay has a hidden tap tempo mode.
+
+Tap the WET DELAY logo in time with the music. From the third tap the delay follows your tapping and all six lights blink on the beat. Keep tapping to fine-tune it. Press any of the six time buttons to go back to the fixed times.
+
+The tapped time runs from 100 ms to 2 seconds and is saved with your project. It is not synced to your DAW's tempo: if the song changes tempo, tap again.
 
 ### Parameter Reference
 
