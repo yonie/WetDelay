@@ -14,7 +14,7 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 - A smaller 50% UI Zoom step.
 
 ### Changed
-- The meters show levels above 0 dBFS, with 0, +3 and +6 in red.
+- Fixed the metering to better display signal levels.
 - Now opens at 75% zoom.
 - The six fixed delay times sound exactly as before, and projects saved with earlier versions open unchanged.
 
