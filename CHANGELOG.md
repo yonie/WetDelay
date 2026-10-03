@@ -10,7 +10,7 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
-- A hidden tap tempo mode: tap the WET DELAY logo in time with the music. From the third tap the delay follows the tapped time (100 ms to 2 s) and all six lights blink on the beat. Any time button leaves it. Saved with the project.
+- A hidden bonus tap tempo mode: tap the WET DELAY logo in time with the music. From the third tap the delay follows the tapped time (100 ms to 2 s) and all six lights blink on the beat. Any time button leaves it. Saved with the project.
 - A smaller 50% UI Zoom step.
 
 ### Changed
