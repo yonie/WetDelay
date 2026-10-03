@@ -180,7 +180,8 @@ public:
     // Process a block of stereo samples with given delay time
     void processStereo(float* leftIn, float* leftOut,
                       float* rightIn, float* rightOut,
-                      int numSamples, int delayMs);
+                      int numSamples, int delayMs,
+                       int capSamples = 0);   // > 0: never longer than this many internal samples
     
     // Clear the buffer
     void reset();

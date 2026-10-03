@@ -8,6 +8,9 @@
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include "vstgui/uidescription/delegationcontroller.h"
 #include "wetdelaycids.h"
+#include "taptempo.h"
+
+#include <vector>
 
 namespace Yonie {
 
@@ -17,7 +20,9 @@ class DelayButtonController;
 //------------------------------------------------------------------------
 //  WetDelayProcessorController
 //------------------------------------------------------------------------
-class WetDelayProcessorController : public Steinberg::Vst::EditControllerEx1
+class WetDelayProcessorController : public Steinberg::Vst::EditControllerEx1,
+                                    public VSTGUI::VST3EditorDelegate,
+                                    public TapHost
 {
 public:
 //------------------------------------------------------------------------
@@ -41,6 +46,21 @@ public:
 	Steinberg::tresult PLUGIN_API getState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 	
 	// Get current delay index for UI updates
+	// A press on any time button begins an edit of the delay time: it leaves tap tempo.
+	Steinberg::tresult beginEdit (Steinberg::Vst::ParamID tag) SMTG_OVERRIDE;
+
+	// VST3EditorDelegate: the logo's tap area, and the LEDs learn where the beat is.
+	VSTGUI::CView* createCustomView (VSTGUI::UTF8StringPtr name, const VSTGUI::UIAttributes& attributes,
+	                                 const VSTGUI::IUIDescription* description, VSTGUI::VST3Editor* editor) SMTG_OVERRIDE;
+	VSTGUI::CView* verifyView (VSTGUI::CView* view, const VSTGUI::UIAttributes& attributes,
+	                           const VSTGUI::IUIDescription* description, VSTGUI::VST3Editor* editor) SMTG_OVERRIDE;
+
+	// TapHost
+	void tap () override;
+	bool tapActive () const override { return const_cast<WetDelayProcessorController*> (this)->getParamNormalized (kTapOnParam) >= 0.5; }
+	double tapPeriodSeconds () const override { return tapMsOf (const_cast<WetDelayProcessorController*> (this)->getParamNormalized (kTapMsParam)) / 1000.0; }
+	double tapOrigin () const override { return beatOrigin; }
+
 	int getCurrentDelayIndex() const { return currentDelayIndex; }
 	void setDelayIndexFromUI(int index);
 
@@ -54,7 +74,9 @@ public:
 //------------------------------------------------------------------------
 protected:
 	int currentDelayIndex = 0;
-	
+	std::vector<double> taps;       // recent tap times, tapClock() seconds
+	double beatOrigin = 0.0;
+	void setHidden (Steinberg::Vst::ParamID id, double norm);
 	friend class DelayButtonController;
 };
 

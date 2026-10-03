@@ -63,6 +63,8 @@ protected:
 	
 	// Current delay time index (0-5)
 	int currentDelayIndex = 0;
+	bool tapOn = false;         // tap tempo (taptempo.h)
+	double tapMs = 500.0;
 	
 	// Delay time values in milliseconds
 	static const int DELAY_TIMES_MS[6];

@@ -97,6 +97,12 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 				int32 sampleOffset;
 				int32 numPoints = paramQueue->getPointCount ();
 				
+				if (numPoints > 0 && paramQueue->getParameterId () == kTapOnParam &&
+				    paramQueue->getPoint (numPoints - 1, sampleOffset, value) == kResultTrue)
+					tapOn = value >= 0.5;
+				if (numPoints > 0 && paramQueue->getParameterId () == kTapMsParam &&
+				    paramQueue->getPoint (numPoints - 1, sampleOffset, value) == kResultTrue)
+					tapMs = tapMsOf (value);
 				if (paramQueue->getParameterId () == kDelayTimeParam && numPoints > 0)
 				{
 					// Get last parameter change
@@ -136,9 +142,13 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 			}
 			
 			// Process delay (100% wet)
-			int delayMs = DELAY_TIMES_MS[currentDelayIndex];
+			int delayMs = tapOn ? static_cast<int>(tapMs + 0.5) : DELAY_TIMES_MS[currentDelayIndex];
+			// The six times keep the length they always had: the buffer used to be
+			// exactly 400 ms long, which held 400 ms at one sample short (9599 at
+			// 24 kHz). Tap tempo needed a longer buffer; the buttons must not move.
+			const int legacyCap = static_cast<int>(400 * 24000.0 / 1000.0) - 1;   // the internal rate is 24 kHz
 			delayBuffer.processStereo(inputL, outputL, inputR, outputR,
-			                          data.numSamples, delayMs);
+			                          data.numSamples, delayMs, tapOn ? 0 : legacyCap);
 			
 			// Measure output levels
 			for (int32 i = 0; i < data.numSamples; i++)
@@ -210,7 +220,7 @@ tresult PLUGIN_API WetDelayProcessorProcessor::setupProcessing (Vst::ProcessSetu
 {
 	//--- called before any processing ----
 	// Initialize delay buffer with max delay time
-	delayBuffer.prepare(newSetup.sampleRate, 400);  // 400ms max
+	delayBuffer.prepare(newSetup.sampleRate, static_cast<int>(kTapMaxMs));  // room for a tapped time
 	
 	monoBus.prepare(newSetup.maxSamplesPerBlock);
 	return AudioEffect::setupProcessing (newSetup);
@@ -241,6 +251,15 @@ tresult PLUGIN_API WetDelayProcessorProcessor::setState (IBStream* state)
 	{
 		currentDelayIndex = savedDelayIndex;
 	}
+	// Tap tempo, appended later; older sessions end here and load with it off.
+	tapOn = false;
+	int32 marker = 0, on = 0;
+	double ms = 500.0;
+	if (streamer.readInt32(marker) && marker == kTapStateMarker && streamer.readInt32(on) && streamer.readDouble(ms))
+	{
+		tapOn = on != 0;
+		tapMs = ms < kTapMinMs ? kTapMinMs : ms > kTapMaxMs ? kTapMaxMs : ms;
+	}
 	
 	return kResultOk;
 }
@@ -252,6 +271,9 @@ tresult PLUGIN_API WetDelayProcessorProcessor::getState (IBStream* state)
 	IBStreamer streamer (state, kLittleEndian);
 	
 	streamer.writeInt32(currentDelayIndex);
+	streamer.writeInt32(kTapStateMarker);
+	streamer.writeInt32(tapOn ? 1 : 0);
+	streamer.writeDouble(tapMs);
 
 	return kResultOk;
 }

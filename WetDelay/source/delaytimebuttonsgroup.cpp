@@ -34,20 +34,14 @@ CMouseEventResult DelayTimeButtonGroup::onMouseDown(CPoint& where, const CButton
     
     if (clickedButton >= 0)  // Click inside a button region
     {
-        if (clickedButton != currentSelection)
-        {
-            currentSelection = clickedButton;
-            
-            // Update the control value (0-5 mapped to normalized 0.0-1.0)
-            setValueNormalized(static_cast<float>(currentSelection) / 5.0f);
-            
-            // Begin/end edit for proper automation support
-            beginEdit();
-            valueChanged();
-            endEdit();
-            
-            invalid();
-        }
+        // Every press is an edit, the lit button included: pressing any time button
+        // is how tap tempo is left (the controller's beginEdit), even the one already lit.
+        currentSelection = clickedButton;
+        setValueNormalized(static_cast<float>(currentSelection) / 5.0f);
+        beginEdit();
+        valueChanged();
+        endEdit();
+        invalid();
         return kMouseEventHandled;  // We consumed this click
     }
     

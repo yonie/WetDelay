@@ -6,6 +6,8 @@
 
 #include "vstgui/lib/controls/ccontrol.h"
 #include "vstgui/lib/cdrawcontext.h"
+#include "vstgui/lib/cvstguitimer.h"
+#include "taptempo.h"
 
 namespace Yonie {
 
@@ -17,7 +19,7 @@ class ButtonSelectionFrame : public VSTGUI::CControl
 {
 public:
     ButtonSelectionFrame(const VSTGUI::CRect& size);
-    ~ButtonSelectionFrame() override = default;
+    ~ButtonSelectionFrame() override;
 
     // CView overrides
     void draw(VSTGUI::CDrawContext* context) override;
@@ -35,6 +37,9 @@ public:
     void setFrameColor(const VSTGUI::CColor& color) { ledOnColor = color; }
     void setFrameWidth(VSTGUI::CCoord width) { (void)width; }  // Ignored
     
+    // Tap tempo: while it is on, all six LEDs blink on the tapped beat.
+    void setTapHost(TapHost* host);
+
     CLASS_METHODS(ButtonSelectionFrame, CControl)
 
 protected:
@@ -45,6 +50,12 @@ protected:
     // LED dimensions
     VSTGUI::CCoord ledWidth = 50;   // Width of LED bar
     VSTGUI::CCoord ledHeight = 6;   // Height of LED bar
+
+    TapHost* tapHost = nullptr;
+    VSTGUI::SharedPointer<VSTGUI::CVSTGUITimer> blinkTimer;
+    bool shownBlink = false;
+    bool shownTapping = false;
+    bool tapLit() const;            // are the LEDs on at this moment of the beat
 };
 
 //------------------------------------------------------------------------
