@@ -168,10 +168,10 @@ tresult PLUGIN_API WetDelayProcessorProcessor::process (Vst::ProcessData& data)
 				float outL = outputPeakL.load();
 				float outR = outputPeakR.load();
 				
-				sendMeter(kInputMeterL, inL, oldMeterL_In);
-				sendMeter(kInputMeterR, inR, oldMeterR_In);
-				sendMeter(kOutputMeterL, outL, oldMeterL_Out);
-				sendMeter(kOutputMeterR, outR, oldMeterR_Out);
+				sendMeter(kInputMeterL, Meter::encode(inL), oldMeterL_In);
+				sendMeter(kInputMeterR, Meter::encode(inR), oldMeterR_In);
+				sendMeter(kOutputMeterL, Meter::encode(outL), oldMeterL_Out);
+				sendMeter(kOutputMeterR, Meter::encode(outR), oldMeterR_Out);
 			}
 			
 			// Output is not silent

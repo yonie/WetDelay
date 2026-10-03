@@ -8,6 +8,7 @@
 #include "delaybuffer.h"
 #include "wetdelaycids.h"
 #include "monobus.h"
+#include "meterlevel.h"
 #include <atomic>
 
 namespace Yonie {
