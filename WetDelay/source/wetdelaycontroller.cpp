@@ -142,7 +142,10 @@ IPlugView* PLUGIN_API WetDelayProcessorController::createView (FIDString name)
 		// Note that enabling zoom makes the editor open at a true 1:1 instead
 		// of being scaled by the host, so on a high-DPI screen it now starts
 		// smaller than it did. The menu is how that gets set.
-		view->setAllowedZoomFactors({0.75, 1.0, 1.25});
+		view->setAllowedZoomFactors({0.5, 0.75, 1.0, 1.25});
+		// Opens at 75%: at 100% the panels are large on most screens. The zoom is not
+		// saved, so every window opens here and nothing stored depends on it.
+		view->setZoomFactor(0.75);
 		return view;
 	}
 	return nullptr;
