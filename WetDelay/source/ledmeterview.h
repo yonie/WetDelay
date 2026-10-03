@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "vstgui/lib/cview.h"
 #include "vstgui/lib/controls/ccontrol.h"
 #include "vstgui/lib/cdrawcontext.h"
@@ -39,6 +41,18 @@ public:
     // behaviour.
     void setDbRange(double lo, double hi) { dbLo = lo; dbHi = hi; dbScale = hi > lo; }
     bool hasDbRange() const { return dbScale; }
+
+    // The dB each segment stands for, lowest first, one per segment
+    // (db-thresholds in the .uidesc). The line's ladder steps 3 dB near the top
+    // so +3 and +6 read the same on every plug-in; empty falls back to even
+    // steps across the dB range.
+    void setDbThresholds(const std::vector<double>& db) { thresholds = db; }
+    double segmentDb(int i) const
+    {
+        if (static_cast<int>(thresholds.size()) == numSegments)
+            return thresholds[i];
+        return dbLo + i * (dbHi - dbLo) / (numSegments - 1);
+    }
     double dbMin() const { return dbLo; }
     double dbMax() const { return dbHi; }
 
@@ -57,6 +71,7 @@ protected:
     VSTGUI::CCoord segmentGap = 2;
     bool isHorizontal = true;
     bool dbScale = false;
+    std::vector<double> thresholds;
     double dbLo = -48.0, dbHi = 18.0;
     
     // Color definitions for 80's LED look
