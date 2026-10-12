@@ -41,12 +41,12 @@ tresult PLUGIN_API WetDelayProcessorController::initialize (FUnknown* context)
 		Vst::ParameterInfo::kCanAutomate | Vst::ParameterInfo::kIsList
 	);
 	
-	delayParam->appendString(STR16("20 ms"));
-	delayParam->appendString(STR16("40 ms"));
-	delayParam->appendString(STR16("80 ms"));
-	delayParam->appendString(STR16("120 ms"));
-	delayParam->appendString(STR16("220 ms"));
-	delayParam->appendString(STR16("400 ms"));
+	delayParam->appendString(STR16("20ms"));
+	delayParam->appendString(STR16("40ms"));
+	delayParam->appendString(STR16("80ms"));
+	delayParam->appendString(STR16("120ms"));
+	delayParam->appendString(STR16("220ms"));
+	delayParam->appendString(STR16("400ms"));
 	
 	parameters.addParameter(delayParam);
 	

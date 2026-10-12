@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <vector>
-
 #include "vstgui/lib/cview.h"
 #include "vstgui/lib/controls/ccontrol.h"
 #include "vstgui/lib/cdrawcontext.h"
@@ -14,7 +12,8 @@ namespace Yonie {
 
 //------------------------------------------------------------------------
 // LEDMeterView - Custom 80's style LED segment meter
-// Displays 12 discrete LED segments: 8 green, 2 yellow, 2 red
+// A row of LED blocks on the line's one meter scale; the scale and the colour
+// of each block come from meterlevel.h, the block count from the .uidesc.
 //------------------------------------------------------------------------
 class LEDMeterView : public VSTGUI::CControl
 {
@@ -30,32 +29,6 @@ public:
     void setSegmentGap(VSTGUI::CCoord gap) { segmentGap = gap; }
     void setHorizontal(bool horiz) { isHorizontal = horiz; }
 
-    // Map the incoming value as dB rather than linearly across the segments.
-    //
-    // Linear is what this did, and it makes the meter read far lower than the
-    // signal actually is: half the strip covers -6 dBFS to 0, so -20 dBFS lights
-    // ONE segment of twelve and anything below -24 lights none at all. A player
-    // reads that as "no signal" when the track is perfectly healthy.
-    //
-    // Off by default, so a meter that has not been given a range keeps the old
-    // behaviour.
-    void setDbRange(double lo, double hi) { dbLo = lo; dbHi = hi; dbScale = hi > lo; }
-    bool hasDbRange() const { return dbScale; }
-
-    // The dB each segment stands for, lowest first, one per segment
-    // (db-thresholds in the .uidesc). The line's ladder steps 3 dB near the top
-    // so +3 and +6 read the same on every plug-in; empty falls back to even
-    // steps across the dB range.
-    void setDbThresholds(const std::vector<double>& db) { thresholds = db; }
-    double segmentDb(int i) const
-    {
-        if (static_cast<int>(thresholds.size()) == numSegments)
-            return thresholds[i];
-        return dbLo + i * (dbHi - dbLo) / (numSegments - 1);
-    }
-    double dbMin() const { return dbLo; }
-    double dbMax() const { return dbHi; }
-
     // Number of segments lit for the current value.
     int litSegments() const;
     
@@ -70,20 +43,17 @@ protected:
     int numSegments = 12;
     VSTGUI::CCoord segmentGap = 2;
     bool isHorizontal = true;
-    bool dbScale = false;
-    std::vector<double> thresholds;
-    double dbLo = -48.0, dbHi = 18.0;
     
     // Color definitions for 80's LED look
-    // Green zone (segments 0-7)
+    // Green
     VSTGUI::CColor greenLit{0, 255, 0, 255};
     VSTGUI::CColor greenDark{10, 42, 10, 255};
     
-    // Yellow zone (segments 8-9)
+    // Yellow
     VSTGUI::CColor yellowLit{255, 255, 0, 255};
     VSTGUI::CColor yellowDark{42, 42, 10, 255};
     
-    // Red zone (segments 10-11)
+    // Red
     VSTGUI::CColor redLit{255, 0, 0, 255};
     VSTGUI::CColor redDark{42, 10, 10, 255};
 };

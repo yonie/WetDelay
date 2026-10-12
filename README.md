@@ -5,31 +5,24 @@
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 [![Version](https://img.shields.io/github/v/release/yonie/WetDelay?label=version&color=orange)](https://github.com/yonie/WetDelay/releases/latest)
 
-A professional stereo delay VST3 plugin with authentic 80s rack-style digital delay character.
+80s studio delay faithfully recreated in a CPU-friendly effect. Now with tap tempo mode!
 
 **Download:** [wetvst.com/wetdelay](https://wetvst.com/wetdelay/)
 
 [![WetDelay Plugin Screenshot](screenshot.png)](https://wetvst.com/wetdelay/)
 
-> **Panel too big or too small?** Right-click anywhere on the panel and pick **UI Zoom** - 50%, 75%, 100% or 125%.
+> **Panel too big or too small?** Right-click anywhere on the panel and pick **UI Zoom**, from 50% to 125%.
 
 ## Features
 
-- **100% Wet Delay**: Pure delayed signal output with no dry signal mix
-- **6 Delay Times**: Switchable delay times (20ms, 40ms, 80ms, 120ms, 220ms, 400ms)
-- **Stereo Processing**: Independent left and right channel delay processing
-- **Visual Metering**: Real-time peak level meters for input and output
-- **VST3 Automation**: Full parameter automation support in DAWs
-- **Resizable UI**: Right-click the panel for UI Zoom - 50%, 75%, 100% or 125%
-- **Hidden bonus tap tempo mode**: Tap the logo in time with the music (see below)
+- 6 hand-picked delay times that cover a broad range of applications including slapback
+- 24kHz internal rate, 12-bit quantisation
+- Stereo operation including crosstalk
+- Real-time input/output metering
+- Resizable panel: right-click and zoom from 50% to 125%
+- 100% wet output - no dry signal in the mix, so it belongs on a send or a parallel path
+- Tap tempo mode: tap the logo in time with the music (see below)
 
-### 80s Rack-Style Character
-
-- **24 kHz Internal Sample Rate**: Authentic vintage digital delay processing with band-limited frequency response
-- **12-bit Quantization**: Classic gritty digital character with 4096 discrete levels
-- **TPDF Dither**: Smooth quantization with triangular probability density function dither (0.5 LSB)
-- **Vintage Filtering**: 80 Hz high-pass and 9 kHz low-pass (6 dB/oct) for warm character
-- **Channel Crosstalk**: Authentic -40 dB (1%) L/R channel bleed simulating analog circuitry
 
 ## Download & Installation
 

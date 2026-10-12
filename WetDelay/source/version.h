@@ -15,6 +15,6 @@
 #else
 #define stringFileDescription	"WetDelay VST3"
 #endif
-#define stringCompanyName		"Yonie\0"
+#define stringCompanyName		"WET VST\0"
 #define stringLegalCopyright	"Copyright(c) 2026 Yonie."
 #define stringLegalTrademarks	"VST is a trademark of Steinberg Media Technologies GmbH"

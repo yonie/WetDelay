@@ -18,7 +18,7 @@ using namespace Yonie;
 //  VST Plug-in Entry
 //------------------------------------------------------------------------
 
-BEGIN_FACTORY_DEF ("Yonie", 
+BEGIN_FACTORY_DEF ("WET VST", 
 			       "https://github.com/yonie", 
 			       "mailto:contact@wetvst.com")
 
