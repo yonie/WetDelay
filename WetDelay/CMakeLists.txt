@@ -79,7 +79,7 @@ smtg_target_configure_version_file(WetDelay)
 if(SMTG_MAC)
     smtg_target_set_bundle(WetDelay
         BUNDLE_IDENTIFIER org.yonie.vst3.wetdelay
-        COMPANY_NAME "Yonie"
+        COMPANY_NAME "WET VST"
     )
     smtg_target_set_debug_executable(WetDelay
         "/Applications/VST3PluginTestHost.app"

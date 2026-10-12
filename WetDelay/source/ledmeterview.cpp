@@ -25,36 +25,8 @@ int LEDMeterView::litSegments() const
 {
     const float level = getValueNormalized();
 
-    int litCount;
-    if (static_cast<int>(thresholds.size()) == numSegments)
-    {
-        // One dB figure per segment: a segment lights once the reading reaches it.
-        if (level <= 1e-6f)
-            return 0;
-        const double db = Meter::decodeDb(level);
-        litCount = 0;
-        for (int i = 0; i < numSegments; ++i)
-            if (db >= thresholds[i] - 1e-9)
-                litCount = i + 1;
-    }
-    else if (dbScale)
-    {
-        // One segment per equal step in dB between dbLo and dbHi, so the strip
-        // reads the way a meter is expected to read.
-        if (level <= 1e-6f)
-            return 0;
-        const double db = Meter::decodeDb(level);   // dB-encoded, see meterlevel.h
-        const double step = (dbHi - dbLo) / (numSegments - 1);
-        litCount = static_cast<int>(std::floor((db - dbLo) / step)) + 1;
-    }
-    else
-    {
-        litCount = static_cast<int>(level * numSegments + 0.5f);
-    }
-
-    if (litCount > numSegments) litCount = numSegments;
-    if (litCount < 0) litCount = 0;
-    return litCount;
+    // A level meter: the line's one scale, only the block count is ours (meterlevel.h).
+    return Meter::litSegments(level, numSegments);
 }
 
 //------------------------------------------------------------------------
@@ -103,61 +75,22 @@ CRect LEDMeterView::calculateSegmentRect(int segmentIndex) const
 //------------------------------------------------------------------------
 CColor LEDMeterView::getLitColor(int segmentIndex) const
 {
-    // 12 segments: 0-7 green, 8-9 yellow, 10-11 red
-    // Scale for different segment counts
-    // On a dB ladder the colour follows the dB the segment stands for: red from
-    // 0 dBFS up, yellow within 12 dB below it, green under that.
-    if (dbScale)
+    switch (Meter::segmentZone(segmentIndex, numSegments))
     {
-        const double db = segmentDb(segmentIndex);
-        if (db >= -1e-9) return redLit;
-        if (db > -12.0)  return yellowLit;
-        return greenLit;
-    }
-
-    float position = static_cast<float>(segmentIndex) / (numSegments - 1);
-    
-    if (position < 0.67f)  // First ~67% (green zone)
-    {
-        return greenLit;
-    }
-    else if (position < 0.83f)  // Next ~16% (yellow zone)
-    {
-        return yellowLit;
-    }
-    else  // Last ~17% (red zone)
-    {
-        return redLit;
+        case Meter::kGreen:  return greenLit;
+        case Meter::kYellow: return yellowLit;
+        default:             return redLit;
     }
 }
 
 //------------------------------------------------------------------------
 CColor LEDMeterView::getDarkColor(int segmentIndex) const
 {
-    // Same zones as lit colors, but darker
-    // On a dB ladder the colour follows the dB the segment stands for: red from
-    // 0 dBFS up, yellow within 12 dB below it, green under that.
-    if (dbScale)
+    switch (Meter::segmentZone(segmentIndex, numSegments))
     {
-        const double db = segmentDb(segmentIndex);
-        if (db >= -1e-9) return redDark;
-        if (db > -12.0)  return yellowDark;
-        return greenDark;
-    }
-
-    float position = static_cast<float>(segmentIndex) / (numSegments - 1);
-    
-    if (position < 0.67f)
-    {
-        return greenDark;
-    }
-    else if (position < 0.83f)
-    {
-        return yellowDark;
-    }
-    else
-    {
-        return redDark;
+        case Meter::kGreen:  return greenDark;
+        case Meter::kYellow: return yellowDark;
+        default:             return redDark;
     }
 }
 

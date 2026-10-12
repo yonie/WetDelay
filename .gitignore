@@ -76,3 +76,6 @@ desktop.ini
 # VST SDK build artifacts
 vst3sdk/build/
 vst3sdk/out/
+
+# Release build tree
+*/build-rel/
