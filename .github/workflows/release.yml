@@ -250,21 +250,20 @@ jobs:
           # The Installation block below is REQUIRED and stays: people land on the
           # release page from an aggregator with no idea what to do with a .vst3.
           body: |
-            **WetDelay 1.3.1**
+            **WetDelay 1.4.0**
 
             Product page: https://wetvst.com/wetdelay/
 
             What's new:
 
-            - Linux: no more crash when the editor opens in Carla, or in any host that hands its event loop over through the plug-in window.
-            - UI Zoom now sits directly in the right-click menu, so it also shows in hosts that leave out a plug-in's submenus (Studio One).
-            - The window no longer shows resize arrows it could not act on; UI Zoom changes the size.
-
-            The sound stays the same, and saved projects reload with the same settings.
+            - I added tap tempo to WetDelay: Tap the WET DELAY logo in time with the music, and from the third tap onwards the delay follows your tapping (100 ms to 2 s) while all six lights blink on the beat.
+            - added 50% zoom percentage for even smaller plugin GUI (so you can fit more plugins on your screen)
+            - plugins now open on 75% scale by default, right click a panel to change it's size any time
+            - fixed metering display across the line of plugins. 1 red LED for OVR
 
             ### Resizing the panel
 
-            Right-click anywhere on the panel and pick **UI Zoom** - 75%, 100% or 125%.
+            Right-click anywhere on the panel and pick **UI Zoom** - 50%, 75%, 100% or 125%.
 
             ### Installation
 
