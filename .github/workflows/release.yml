@@ -61,7 +61,7 @@ jobs:
           retention-days: 1
 
   build-macos:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -132,7 +132,7 @@ jobs:
 
   merge-and-release:
     needs: [build-windows, build-linux, build-macos, build-au]
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
