@@ -34,7 +34,7 @@ fi
 # two Linux fixes: cairo_device_finish (a crash when an editor is reopened in Reaper) and the
 # X11 run-loop order (a crash when a host such as Carla opens the editor). macOS keeps
 # Steinberg's VSTGUI.
-VSTGUI_FORK_COMMIT=17888e65966cf41919b44237a6fb8c1aba73951a
+VSTGUI_FORK_COMMIT=d214ab658fba525c1aa297448797b92eabf74c3c
 if [ "$PLATFORM" = "linux" ]; then
     echo "Using VSTGUI $VSTGUI_FORK_COMMIT from yonie/vstgui (Linux fixes)"
     ( cd vst3sdk/vstgui4 &&       { git cat-file -e "$VSTGUI_FORK_COMMIT^{commit}" 2>/dev/null || git fetch -q https://github.com/yonie/vstgui.git wet-linux; } &&       git checkout -q "$VSTGUI_FORK_COMMIT" ) || { echo "ERROR: could not check out VSTGUI $VSTGUI_FORK_COMMIT"; exit 1; }

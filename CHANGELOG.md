@@ -9,6 +9,16 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-11-20
+
+### Fixed
+- Linux: the plug-in now loads on systems without `libxcb-cursor` installed, such as a fresh Linux Mint.
+
+### Changed
+- The sound and saved settings are unchanged.
+
+## [1.4.0] - 2026-10-14
+
 ### Added
 - A hidden bonus tap tempo mode: tap the WET DELAY logo in time with the music. From the third tap the delay follows the tapped time (100 ms to 2 s) and all six lights blink on the beat. Any time button leaves it. Saved with the project.
 - A smaller 50% UI Zoom step.

@@ -250,16 +250,14 @@ jobs:
           # The Installation block below is REQUIRED and stays: people land on the
           # release page from an aggregator with no idea what to do with a .vst3.
           body: |
-            **WetDelay 1.4.0**
+            **WetDelay 1.4.1**
 
             Product page: https://wetvst.com/wetdelay/
 
             What's new:
 
-            - I added tap tempo to WetDelay: Tap the WET DELAY logo in time with the music, and from the third tap onwards the delay follows your tapping (100 ms to 2 s) while all six lights blink on the beat.
-            - added 50% zoom percentage for even smaller plugin GUI (so you can fit more plugins on your screen)
-            - plugins now open on 75% scale by default, right click a panel to change it's size any time
-            - fixed metering display across the line of plugins. 1 red LED for OVR
+            - Linux: the plug-in now loads on systems without `libxcb-cursor` installed, such as a fresh Linux Mint.
+            - The sound and saved settings are unchanged.
 
             ### Resizing the panel
 
